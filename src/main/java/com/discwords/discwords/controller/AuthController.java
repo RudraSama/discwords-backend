@@ -1,10 +1,13 @@
 package com.discwords.discwords.controller;
 
-import com.discwords.discwords.model.UserDetails;
+import com.discwords.discwords.model.User;
+import com.discwords.discwords.model.UserDTO;
+import com.discwords.discwords.repository.UserRepo;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,18 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.Collections;
+
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class AuthController {
 
    @PostMapping("api/user/login")
-   public String userLogin(@RequestBody UserDetails userdetails){
-
-      String password_hash = BCrypt.hashpw(userdetails.getPassword(), BCrypt.gensalt());
-      String pass = "gaurav";
-      if(BCrypt.checkpw(, pass)) return "chal gaya";
-
-      return password_hash;
+   public String userLogin(@RequestBody UserDTO userDTO){
+      return "";
    }
 
 

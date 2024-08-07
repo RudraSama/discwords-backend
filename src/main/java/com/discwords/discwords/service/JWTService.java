@@ -1,5 +1,5 @@
 package com.discwords.discwords.service;
-import com.discwords.discwords.model.UserDetails;
+import com.discwords.discwords.model.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -13,7 +13,6 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 @Service
 public class JWTService {
@@ -62,9 +61,9 @@ public class JWTService {
     }
 
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, User user) {
         final String username = extractEmail(token).toString();
-        return (username.equals(userDetails.getEmail()) && isTokenExpired(token));
+        return (username.equals(user.getEmail()) && isTokenExpired(token));
     }
 
 
