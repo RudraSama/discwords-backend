@@ -1,5 +1,6 @@
 package com.discwords.discwords.controller;
 
+import com.discwords.discwords.model.UserDetails;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -9,17 +10,28 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.Collections;
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class AuthController {
+
+   @PostMapping("api/user/login")
+   public String userLogin(@RequestBody UserDetails userdetails){
+
+      String password_hash = BCrypt.hashpw(userdetails.getPassword(), BCrypt.gensalt());
+      String pass = "gaurav";
+      if(BCrypt.checkpw(, pass)) return "chal gaya";
+
+      return password_hash;
+   }
+
 
    @Value("${google_client_id}")
    private String CLIENT_ID;
 
 
-   @CrossOrigin(origins = "http://localhost:3000")
    @PostMapping("/api/auth/google")
    public String googleLogin(@RequestBody TokenRequest tokenRequest) throws Exception{
 
