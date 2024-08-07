@@ -1,5 +1,5 @@
 package com.discwords.discwords.controller;
-
+import com.discwords.discwords.model.UserDetails;
 import com.discwords.discwords.service.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +12,9 @@ public class HomeController {
     @Autowired
     JWTService jwtService;
 
+    @Autowired
+    UserDetails userDetails;
+
     @GetMapping("/")
     public String greet(){
         return "Hii";
@@ -20,7 +23,10 @@ public class HomeController {
 
     @GetMapping("/test")
     public String greet2(){
-        System.out.println(jwtService.generateToken("hiii@gmail.com", "123455"));
+        String token = jwtService.generateToken("hiii@gmail.com", "123455");
+        System.out.println(token);
+        System.out.println(jwtService.extractEmail(token).toString());
+        System.out.println(jwtService.isTokenValid(token, userDetails));
         return "Hii2";
     }
 }
