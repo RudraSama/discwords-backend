@@ -23,7 +23,6 @@ public class AuthController {
    @PostMapping("/api/auth/google")
    public String googleLogin(@RequestBody TokenRequest tokenRequest) throws Exception{
 
-      System.out.println(CLIENT_ID);
       GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(GoogleNetHttpTransport.newTrustedTransport(), GsonFactory.getDefaultInstance())
               .setAudience(Collections.singletonList(CLIENT_ID)).build();
       GoogleIdToken idToken = verifier.verify(tokenRequest.getTokenId());
