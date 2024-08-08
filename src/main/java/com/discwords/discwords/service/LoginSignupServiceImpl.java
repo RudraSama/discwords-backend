@@ -1,4 +1,5 @@
 package com.discwords.discwords.service;
+
 import com.discwords.discwords.exception.UsernameAlreadyExist;
 import com.discwords.discwords.exception.UserAlreadyExist;
 
@@ -41,10 +42,10 @@ public class LoginSignupServiceImpl implements LoginSignupService {
 
     //method to login user
     @Override
-    public UserSession loginUser(UserDTO user){
+    public UserSession loginUser(UserDTO user) {
 
         Optional<User> userRes = userRepo.findByEmail(user.getEmail());
-        if(userRes.isEmpty()){
+        if (userRes.isEmpty()) {
             System.out.println("User not found");
             return null;
         }
@@ -52,30 +53,29 @@ public class LoginSignupServiceImpl implements LoginSignupService {
         User existingUser = userRes.get();
 
         Optional<UserSession> userSessionRes = sessionRepo.findByUserId(existingUser.getUserId());
-        if(userSessionRes.isPresent()){
+        if (userSessionRes.isPresent()) {
             UserSession userSession = userSessionRes.get();
-            if(userSession.getSessionEndTime().before(new Date())){
+            if (userSession.getSessionEndTime().before(new Date())) {
                 sessionRepo.delete(userSession);
-            }
-            else{
+            } else {
                 System.out.println("User already logged in");
             }
         }
 
         Optional<UserSecret> userSecretRes = userSecretRepo.findById(existingUser.getUserId());
 
-        if(userSecretRes.isEmpty()){
+        if (userSecretRes.isEmpty()) {
             System.out.println("User secret is empty");
             return null;
         }
 
         UserSecret userSecret = userSecretRes.get();
 
-        if(BCrypt.checkpw(userSecret.getPassword(), user.getPassword())){
+        if (BCrypt.checkpw(userSecret.getPassword(), user.getPassword())) {
             String jwtToken = jwtService.generateToken(existingUser.getEmail(), Long.toString(existingUser.getUserId()));
-            int newSessionId = (int)(System.currentTimeMillis()/100000);
+            int newSessionId = (int) (System.currentTimeMillis() / 100000);
             UserSession newUserSession = new UserSession(
-                existingUser.getUserId(),
+                    existingUser.getUserId(),
                     jwtToken,
                     new Date(),
                     new Date(System.currentTimeMillis() + 1296000000L),
@@ -88,62 +88,61 @@ public class LoginSignupServiceImpl implements LoginSignupService {
     }
 
     @Override
-    public UserSession signupUser(UserDTO user){
+    public UserSession signupUser(UserDTO user) {
 
 //        checking if email already exists
-       Optional<User> userRes = userRepo.findByEmail(user.getEmail());
-       if(!userRes.isEmpty()){
-           throw new UserAlreadyExist("User Email already exist");
-       }
+        Optional<User> userRes = userRepo.findByEmail(user.getEmail());
+        if (!userRes.isEmpty()) {
+            throw new UserAlreadyExist("User Email already exist");
+        }
 
 //       checking if username already exists
-       Optional<User> tempUserRes = userRepo.findByUsername(user.getUsername());
-       if(!tempUserRes.isEmpty()){
-           throw new UsernameAlreadyExist("username already exist");
-       }
+        Optional<User> tempUserRes = userRepo.findByUsername(user.getUsername());
+        if (!tempUserRes.isEmpty()) {
+            throw new UsernameAlreadyExist("username already exist");
+        }
 
 
-       String password = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-       Long userId = generateId();
+        String password = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        Long userId = generateId();
 
-       User newUser = new User(userId, user.getEmail(), user.getUsername());
-       userRepo.save(newUser);
+        User newUser = new User(userId, user.getEmail(), user.getUsername());
+        userRepo.save(newUser);
 
-       UserSecret newUserSecret = new UserSecret(userId, password);
-       userSecretRepo.save(newUserSecret);
+        UserSecret newUserSecret = new UserSecret(userId, password);
+        userSecretRepo.save(newUserSecret);
 
 
-       //token generation
+        //token generation
 
         String jwtToken = jwtService.generateToken(newUser.getEmail(), Long.toString(newUser.getUserId()));
 
-        int newSessionId = (int)(System.currentTimeMillis()/100000);
+        int newSessionId = (int) (System.currentTimeMillis() / 100000);
         UserSession newUserSession = new UserSession(
                 newUser.getUserId(),
                 jwtToken,
                 new Date(),
-                new Date(System.currentTimeMillis()+1296000000L),
+                new Date(System.currentTimeMillis() + 1296000000L),
                 newSessionId
         );
         return sessionRepo.save(newUserSession);
     }
 
     @Override
-    public UserSession signupUserWithGoogle(TokenRequestDTO tokenRequestDTO)throws Exception{
+    public UserSession signupUserWithGoogle(TokenRequestDTO tokenRequestDTO) throws Exception {
 
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(GoogleNetHttpTransport.newTrustedTransport(), GsonFactory.getDefaultInstance())
                 .setAudience(Collections.singletonList(CLIENT_ID)).build();
         GoogleIdToken idToken = verifier.verify(tokenRequestDTO.getTokenId());
 
-        if(idToken != null) {
+        if (idToken != null) {
             GoogleIdToken.Payload payload = idToken.getPayload();
 
             String userEmail = payload.getEmail();
 
             Optional<User> userRes = userRepo.findByEmail(userEmail);
 
-            if(userRes.isPresent())
-            {
+            if (userRes.isPresent()) {
                 return loginUserWithGoogle(tokenRequestDTO);
             }
 
@@ -154,7 +153,7 @@ public class LoginSignupServiceImpl implements LoginSignupService {
             userRepo.save(newUser);
 
             String jwtToken = jwtService.generateToken(newUser.getEmail(), Long.toString(newUser.getUserId()));
-            int newSessionId = (int)(System.currentTimeMillis()/100000);
+            int newSessionId = (int) (System.currentTimeMillis() / 100000);
             UserSession newUserSession = new UserSession(
                     newUser.getUserId(),
                     jwtToken,
@@ -169,7 +168,7 @@ public class LoginSignupServiceImpl implements LoginSignupService {
     }
 
     @Override
-    public UserSession loginUserWithGoogle(TokenRequestDTO tokenRequestDTO) throws Exception{
+    public UserSession loginUserWithGoogle(TokenRequestDTO tokenRequestDTO) throws Exception {
 
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(GoogleNetHttpTransport.newTrustedTransport(), GsonFactory.getDefaultInstance())
                 .setAudience(Collections.singletonList(CLIENT_ID)).build();
@@ -181,26 +180,24 @@ public class LoginSignupServiceImpl implements LoginSignupService {
             String userEmail = payload.getEmail();
 
             Optional<User> userRes = userRepo.findByEmail(userEmail);
-            User existingUser = userRes.get();
 
-            if(userRes.isEmpty()){
+            if (userRes.isEmpty()) {
                 return signupUserWithGoogle(tokenRequestDTO);
             }
 
+            User existingUser = userRes.get();
+
             Optional<UserSession> userSessionRes = sessionRepo.findByUserId(existingUser.getUserId());
-            if(userSessionRes.isPresent())
-            {
+            if (userSessionRes.isPresent()) {
                 UserSession userSession = userSessionRes.get();
-                if(userSession.getSessionEndTime().before(new Date())){
+                if (userSession.getSessionEndTime().before(new Date())) {
                     sessionRepo.delete(userSession);
-                }
-                else{
+                } else {
                     System.out.println("User already logged in");
                 }
-            }
-            else{
+            } else {
                 String jwtToken = jwtService.generateToken(existingUser.getEmail(), Long.toString(existingUser.getUserId()));
-                int newSessionId = (int)(System.currentTimeMillis()/100000);
+                int newSessionId = (int) (System.currentTimeMillis() / 100000);
                 UserSession newUserSession = new UserSession(
                         existingUser.getUserId(),
                         jwtToken,
@@ -217,12 +214,11 @@ public class LoginSignupServiceImpl implements LoginSignupService {
     }
 
 
-
-    private Long generateId(){
+    private Long generateId() {
         Long time = System.currentTimeMillis();
-        time = time%1000000000;
-        time = time*1000;
-        time = time+(long)(Math.random()*1000);
+        time = time % 1000000000;
+        time = time * 1000;
+        time = time + (long) (Math.random() * 1000);
 
         return time;
     }
