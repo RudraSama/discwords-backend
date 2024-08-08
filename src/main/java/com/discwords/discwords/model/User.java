@@ -1,7 +1,9 @@
 package com.discwords.discwords.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.UniqueConstraint;
 import org.springframework.stereotype.Component;
 
 @Entity
@@ -10,6 +12,7 @@ public class User {
     @Id
     private long user_id;
     private String email;
+    @Column(unique = true)
     private String username;
 
     //Empty Constructor
