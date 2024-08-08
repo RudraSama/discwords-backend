@@ -1,8 +1,11 @@
 package com.discwords.discwords.controller;
 
 
+import com.discwords.discwords.model.TokenRequestDTO;
 import com.discwords.discwords.model.UserDTO;
+import com.discwords.discwords.model.UserSession;
 import com.discwords.discwords.service.LoginSignupService;
+import org.antlr.v4.runtime.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +24,29 @@ public class LoginController {
 
     //register
     @PostMapping("/api/registerUser")
-    public ResponseEntity<String> registerCustomerHandler(@RequestBody UserDTO userDTO){
+    public ResponseEntity<UserSession> registerUserHandler(@RequestBody UserDTO userDTO){
         return new ResponseEntity<>(loginSignupService.signupUser(userDTO), HttpStatus.CREATED);
     }
 
 
     //login
     @PostMapping("/api/loginUser")
-    public ResponseEntity<String> loginCustomerHandler(@RequestBody UserDTO userDTO){
+    public ResponseEntity<UserSession> loginUserHandler(@RequestBody UserDTO userDTO){
         return new ResponseEntity<>(loginSignupService.loginUser(userDTO), HttpStatus.ACCEPTED);
+    }
+
+
+    //login with google
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/api/loginUserWithGoogle")
+    public ResponseEntity<UserSession> loginUserWithGoogleHandler(@RequestBody TokenRequestDTO tokenRequest) throws Exception{
+        return new ResponseEntity<>(loginSignupService.loginUserWithGoogle(tokenRequest), HttpStatus.ACCEPTED);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/api/signupUserWithGoogle")
+    public ResponseEntity<UserSession> signupUserWithGoogleHandler(@RequestBody TokenRequestDTO tokenRequest) throws Exception{
+        return new ResponseEntity<>(loginSignupService.signupUserWithGoogle(tokenRequest), HttpStatus.ACCEPTED);
     }
 
 
