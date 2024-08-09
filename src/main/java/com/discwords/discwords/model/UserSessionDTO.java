@@ -4,6 +4,12 @@ public class UserSessionDTO {
     private UserSession userSession;
     private User user;
 
+    public UserSessionDTO(){}
+    public UserSessionDTO(UserSession userSession, User user) {
+        this.userSession = userSession;
+        this.user = user;
+    }
+
     public User getUser() {
         return user;
     }

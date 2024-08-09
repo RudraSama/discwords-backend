@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface SessionRepo extends JpaRepository<UserSession,Integer> {
-    @Query(nativeQuery = true, value = "SELECT * FROM UserSession WHERE user_id = :user_id LIMIT 1")
+    @Query(nativeQuery = true, value = "SELECT * FROM user_session WHERE user_id = :user_id LIMIT 1")
     Optional<UserSession> findByUserId(@Param("user_id") long user_id);
 }
