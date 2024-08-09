@@ -42,7 +42,7 @@ public class LoginSignupServiceImpl implements LoginSignupService {
 
     //method to login user
     @Override
-    public UserSession loginUser(UserDTO user) {
+    public UserSessionDTO loginUser(UserDTO user) {
 
         Optional<User> userRes = userRepo.findByEmail(user.getEmail());
         if (userRes.isEmpty()) {
@@ -81,14 +81,19 @@ public class LoginSignupServiceImpl implements LoginSignupService {
                     new Date(System.currentTimeMillis() + 1296000000L),
                     newSessionId
             );
-            return sessionRepo.save(newUserSession);
+            UserSession userSession = sessionRepo.save(newUserSession);
+            UserSessionDTO userSessionDTO = new UserSessionDTO();
+            userSessionDTO.setUser(existingUser);
+            userSessionDTO.setUserSession(userSession);
+
+            return userSessionDTO;
 
         }
         return null;
     }
 
     @Override
-    public UserSession signupUser(UserDTO user) {
+    public UserSessionDTO signupUser(UserDTO user) {
 
 //        checking if email already exists
         Optional<User> userRes = userRepo.findByEmail(user.getEmail());
@@ -125,11 +130,18 @@ public class LoginSignupServiceImpl implements LoginSignupService {
                 new Date(System.currentTimeMillis() + 1296000000L),
                 newSessionId
         );
-        return sessionRepo.save(newUserSession);
+        UserSession userSession = sessionRepo.save(newUserSession);
+
+
+        UserSessionDTO userSessionDTO = new UserSessionDTO();
+        userSessionDTO.setUser(newUser);
+        userSessionDTO.setUserSession(userSession);
+
+        return userSessionDTO;
     }
 
     @Override
-    public UserSession signupUserWithGoogle(TokenRequestDTO tokenRequestDTO) throws Exception {
+    public UserSessionDTO signupUserWithGoogle(TokenRequestDTO tokenRequestDTO) throws Exception {
 
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(GoogleNetHttpTransport.newTrustedTransport(), GsonFactory.getDefaultInstance())
                 .setAudience(Collections.singletonList(CLIENT_ID)).build();
@@ -161,14 +173,19 @@ public class LoginSignupServiceImpl implements LoginSignupService {
                     new Date(System.currentTimeMillis() + 1296000000L),
                     newSessionId
             );
-            return newUserSession;
+
+            UserSessionDTO userSessionDTO = new UserSessionDTO();
+            userSessionDTO.setUser(newUser);
+            userSessionDTO.setUserSession(newUserSession);
+
+            return userSessionDTO;
         }
 
         return null;
     }
 
     @Override
-    public UserSession loginUserWithGoogle(TokenRequestDTO tokenRequestDTO) throws Exception {
+    public UserSessionDTO loginUserWithGoogle(TokenRequestDTO tokenRequestDTO) throws Exception {
 
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(GoogleNetHttpTransport.newTrustedTransport(), GsonFactory.getDefaultInstance())
                 .setAudience(Collections.singletonList(CLIENT_ID)).build();
@@ -205,7 +222,14 @@ public class LoginSignupServiceImpl implements LoginSignupService {
                         new Date(System.currentTimeMillis() + 1296000000L),
                         newSessionId
                 );
-                return sessionRepo.save(newUserSession);
+                UserSession userSession = sessionRepo.save(newUserSession);
+
+                UserSessionDTO userSessionDTO = new UserSessionDTO();
+                userSessionDTO.setUser(existingUser);
+                userSessionDTO.setUserSession(userSession);
+
+
+                return userSessionDTO;
 
             }
         }
