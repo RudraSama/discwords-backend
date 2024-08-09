@@ -4,6 +4,7 @@ package com.discwords.discwords.controller;
 import com.discwords.discwords.model.TokenRequestDTO;
 import com.discwords.discwords.model.UserDTO;
 import com.discwords.discwords.model.UserSession;
+import com.discwords.discwords.model.UserSessionDTO;
 import com.discwords.discwords.service.LoginSignupService;
 import org.antlr.v4.runtime.Token;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,14 @@ public class LoginController {
 
     //register
     @PostMapping("/api/registerUser")
-    public ResponseEntity<UserSession> registerUserHandler(@RequestBody UserDTO userDTO){
+    public ResponseEntity<UserSessionDTO> registerUserHandler(@RequestBody UserDTO userDTO){
         return new ResponseEntity<>(loginSignupService.signupUser(userDTO), HttpStatus.CREATED);
     }
 
 
     //login
     @PostMapping("/api/loginUser")
-    public ResponseEntity<UserSession> loginUserHandler(@RequestBody UserDTO userDTO){
+    public ResponseEntity<UserSessionDTO> loginUserHandler(@RequestBody UserDTO userDTO){
         return new ResponseEntity<>(loginSignupService.loginUser(userDTO), HttpStatus.ACCEPTED);
     }
 
@@ -39,13 +40,13 @@ public class LoginController {
     //login with google
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/api/loginUserWithGoogle")
-    public ResponseEntity<UserSession> loginUserWithGoogleHandler(@RequestBody TokenRequestDTO tokenRequest) throws Exception{
+    public ResponseEntity<UserSessionDTO> loginUserWithGoogleHandler(@RequestBody TokenRequestDTO tokenRequest) throws Exception{
         return new ResponseEntity<>(loginSignupService.loginUserWithGoogle(tokenRequest), HttpStatus.ACCEPTED);
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/api/signupUserWithGoogle")
-    public ResponseEntity<UserSession> signupUserWithGoogleHandler(@RequestBody TokenRequestDTO tokenRequest) throws Exception{
+    public ResponseEntity<UserSessionDTO> signupUserWithGoogleHandler(@RequestBody TokenRequestDTO tokenRequest) throws Exception{
         return new ResponseEntity<>(loginSignupService.signupUserWithGoogle(tokenRequest), HttpStatus.ACCEPTED);
     }
 
