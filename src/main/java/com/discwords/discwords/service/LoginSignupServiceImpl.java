@@ -43,7 +43,7 @@ public class LoginSignupServiceImpl implements LoginSignupService {
     //method to login user
     @Override
     public UserSessionDTO loginUser(UserDTO user) {
-
+        System.out.println("hiiii from backend");
         Optional<User> userRes = userRepo.findByEmail(user.getEmail());
         if (userRes.isEmpty()) {
             System.out.println("User not found");
@@ -59,6 +59,7 @@ public class LoginSignupServiceImpl implements LoginSignupService {
                 sessionRepo.delete(userSession);
             } else {
                 System.out.println("User already logged in");
+                return new UserSessionDTO(userSession, existingUser);
             }
         }
 
@@ -71,7 +72,8 @@ public class LoginSignupServiceImpl implements LoginSignupService {
 
         UserSecret userSecret = userSecretRes.get();
 
-        if (BCrypt.checkpw(userSecret.getPassword(), user.getPassword())) {
+
+        if (BCrypt.checkpw(user.getPassword(), userSecret.getPassword())) {
             String jwtToken = jwtService.generateToken(existingUser.getEmail(), Long.toString(existingUser.getUserId()));
             int newSessionId = (int) (System.currentTimeMillis() / 100000);
             UserSession newUserSession = new UserSession(
