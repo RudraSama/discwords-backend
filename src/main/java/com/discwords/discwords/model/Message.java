@@ -1,6 +1,8 @@
 package com.discwords.discwords.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.util.Date;
@@ -8,6 +10,7 @@ import java.util.Date;
 @Entity
 public class Message {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long message_id;
     private long channel_id;
     private String message;
