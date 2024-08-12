@@ -1,15 +1,21 @@
 package com.discwords.discwords.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Channel {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long channel_id;
     private long server_id;
     private String channel_type;
     private String channel_name;
+
+
+    @OneToMany(mappedBy = "channel")
+    private List<Message> messages;
 
     public Channel() {
     }

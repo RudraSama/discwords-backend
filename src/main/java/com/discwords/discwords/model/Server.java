@@ -2,6 +2,9 @@ package com.discwords.discwords.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import java.util.List;
 
 @Entity
 public class Server {
@@ -9,6 +12,13 @@ public class Server {
     @Id
     private long server_id;
     private String server_name;
+
+    @OneToMany(mappedBy = "server")
+    private List<Channel> channels;
+
+
+    @OneToMany(mappedBy = "server")
+    private List<MemberList> memberLists;
 
     public Server(){}
 
