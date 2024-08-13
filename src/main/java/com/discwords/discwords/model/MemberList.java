@@ -1,22 +1,27 @@
 package com.discwords.discwords.model;
 
-import jakarta.persistence.Id;
-import jdk.jfr.Enabled;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 
-@Enabled
+@Entity
 public class MemberList {
 
     @Id
     private long member_id;
-    private long user_id;
-    private long server_id;
+    private long profile_id;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "server_id")
+    @JsonBackReference
+    private Server server;
 
     public MemberList(){}
 
-    public MemberList(long member_id, long user_id, long server_id) {
+    public MemberList(long member_id, long profile_id, long server_id) {
         this.member_id = member_id;
-        this.user_id = user_id;
-        this.server_id = server_id;
+        this.profile_id = profile_id;
+//        this.server_id = server_id;
     }
 
 
@@ -29,19 +34,20 @@ public class MemberList {
         this.member_id = member_id;
     }
 
-    public long getUser_id() {
-        return user_id;
+    public long getProfile_id() {
+        return profile_id;
     }
 
-    public void setUser_id(long user_id) {
-        this.user_id = user_id;
+    public void setProfile_id(long profile_id) {
+        this.profile_id = profile_id;
     }
 
-    public long getServer_id() {
-        return server_id;
+
+    public Server getServer() {
+        return server;
     }
 
-    public void setServer_id(long server_id) {
-        this.server_id = server_id;
+    public void setServer(Server server) {
+        this.server = server;
     }
 }

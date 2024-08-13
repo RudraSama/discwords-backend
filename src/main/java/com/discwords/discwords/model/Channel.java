@@ -1,15 +1,16 @@
 package com.discwords.discwords.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.List;
+
 
 @Entity
 public class Channel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long channel_id;
-    private long server_id;
     private String channel_type;
     private String channel_name;
 
@@ -17,12 +18,19 @@ public class Channel {
     @OneToMany(mappedBy = "channel")
     private List<Message> messages;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "server_id")
+    @JsonBackReference
+    private Server server;
+
+
+
     public Channel() {
     }
 
     public Channel(long channel_id, long server_id, String channel_type, String channel_name) {
         this.channel_id = channel_id;
-        this.server_id = server_id;
+//        this.server_id = server_id;
         this.channel_type = channel_type;
         this.channel_name = channel_name;
     }
@@ -33,14 +41,6 @@ public class Channel {
 
     public void setChannel_id(long channel_id) {
         this.channel_id = channel_id;
-    }
-
-    public long getServer_id() {
-        return server_id;
-    }
-
-    public void setServer_id(long server_id) {
-        this.server_id = server_id;
     }
 
     public String getChannel_type() {
@@ -57,5 +57,21 @@ public class Channel {
 
     public void setChannel_name(String channel_name) {
         this.channel_name = channel_name;
+    }
+
+    public Server getServer() {
+        return server;
+    }
+
+    public void setServer(Server server) {
+        this.server = server;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 }

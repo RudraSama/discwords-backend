@@ -1,36 +1,37 @@
 package com.discwords.discwords.controller;
-import com.discwords.discwords.model.User;
-import com.discwords.discwords.repository.UserRepo;
-import com.discwords.discwords.service.JWTService;
+import com.discwords.discwords.model.ConversationDTO;
+import com.discwords.discwords.model.DirectMessageDTO;
+import com.discwords.discwords.repository.DirectMessageRepo;
+import com.discwords.discwords.service.DirectMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HomeController {
 
     @Autowired
-    JWTService jwtService;
-
-
-   @Autowired
-    UserRepo userRepo;
-
+    DirectMessageService directMessageService;
 
     @GetMapping("/")
     public String greet(){
-        User user = new User();
-        user.setUserId(12449);
-        user.setEmail("Email@email.com");
-        user.setUsername("johndoe");
-        userRepo.save(user);
         return "Hii";
     }
 
 
-    @GetMapping("/test")
-    public String greet2(){
-        String token = jwtService.generateToken("hiii@gmail.com", "123455");
-        return "Hii2";
+    //temp create convo
+    @PostMapping("/createConversation")
+    public ConversationDTO createConversation(@RequestBody TempClass tempClass){
+        System.out.println(tempClass.getProfile_id_one()+"  "+tempClass.getProfile_id_two());
+        return directMessageService.createConversation(tempClass.getProfile_id_one(), tempClass.getProfile_id_two());
     }
+
+    //temp send message
+    @PostMapping("/sendMessage")
+    public void sendMessage(@RequestBody DirectMessageDTO directMessageDTO){
+        directMessageService.sendMessage(directMessageDTO.getConversation_id(), directMessageDTO.getProfile_id(), directMessageDTO.getMessage());
+    }
+
 }
