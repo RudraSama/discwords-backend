@@ -5,6 +5,7 @@ import com.discwords.discwords.exception.UserAlreadyExist;
 
 
 import com.discwords.discwords.model.*;
+import com.discwords.discwords.repository.ProfileRepo;
 import com.discwords.discwords.repository.SessionRepo;
 import com.discwords.discwords.repository.UserRepo;
 import com.discwords.discwords.repository.UserSecretRepo;
@@ -32,6 +33,10 @@ public class LoginSignupServiceImpl implements LoginSignupService {
 
     @Autowired
     private SessionRepo sessionRepo;
+
+
+    @Autowired
+    private ProfileRepo profileRepo;
 
     @Autowired
     JWTService jwtService;
@@ -118,6 +123,15 @@ public class LoginSignupServiceImpl implements LoginSignupService {
 
         UserSecret newUserSecret = new UserSecret(userId, password);
         userSecretRepo.save(newUserSecret);
+
+
+        //creating profile
+        Profile profile = new Profile();
+        profile.setUser_id(newUser.getUserId());
+        profile.setEmail(newUser.getEmail());
+        profile.setUsername(newUser.getUsername());
+        profileRepo.save(profile);
+
 
 
         //token generation

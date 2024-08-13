@@ -1,8 +1,6 @@
 package com.discwords.discwords.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -16,9 +14,11 @@ public class Server {
     @OneToMany(mappedBy = "server")
     private List<Channel> channels;
 
-
-    @OneToMany(mappedBy = "server")
+    @OneToMany(mappedBy = "server", fetch = FetchType.LAZY)
     private List<MemberList> memberLists;
+
+    @OneToOne(mappedBy = "server", cascade = CascadeType.ALL)
+    private Member member;
 
     public Server(){}
 
@@ -41,5 +41,22 @@ public class Server {
 
     public void setServer_id(long server_id) {
         this.server_id = server_id;
+    }
+
+
+    public List<Channel> getChannels() {
+        return channels;
+    }
+
+    public void setChannels(List<Channel> channels) {
+        this.channels = channels;
+    }
+
+    public List<MemberList> getMemberLists() {
+        return memberLists;
+    }
+
+    public void setMemberLists(List<MemberList> memberLists) {
+        this.memberLists = memberLists;
     }
 }
