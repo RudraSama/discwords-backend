@@ -9,10 +9,4 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class DirectMessageWebSocketContoller {
 
-    @MessageMapping("/user")
-    @SendTo("/channel/1")
-    public DirectMessageDTO send(DirectMessageDTO message){
-        System.out.println("i'm controller");
-        return message;
-    }
 }
