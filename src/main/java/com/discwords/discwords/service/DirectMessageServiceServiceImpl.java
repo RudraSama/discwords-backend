@@ -1,17 +1,16 @@
 package com.discwords.discwords.service;
 
 
-import com.discwords.discwords.model.Conversation;
-import com.discwords.discwords.model.ConversationDTO;
-import com.discwords.discwords.model.DirectMessage;
-import com.discwords.discwords.model.Profile;
+import com.discwords.discwords.model.*;
 import com.discwords.discwords.repository.ConversationRepo;
 import com.discwords.discwords.repository.DirectMessageRepo;
 import com.discwords.discwords.repository.ProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -96,6 +95,46 @@ public class DirectMessageServiceServiceImpl implements DirectMessageService {
         directMessageRepo.save(newDirectMessage);
 
 
+    }
+
+    @Override
+    public List<DirectMessageDTO> getMessages(long conversation_id){
+       List<DirectMessageDTO> directMessageDTOList = new ArrayList<DirectMessageDTO>();
+
+       Optional<Conversation> conversation = conversationRepo.findById(conversation_id);
+
+       if(conversation.isEmpty()){
+           throw new RuntimeException("Conversation ID is invalid");
+       }
+
+       Optional<List<DirectMessage>> directMessageList = directMessageRepo.findByConversationId(conversation.get().getConversation_id());
+
+       if(directMessageList.isEmpty()){
+          throw new RuntimeException("No Direct Message with this conversation Id");
+       }
+
+       if (directMessageList.get().isEmpty()){
+           return directMessageDTOList;
+       }
+
+       directMessageList.get().forEach(directMessage->{
+           DirectMessageDTO tempDTO = new DirectMessageDTO();
+           tempDTO.setDirectMessage_id(directMessage.getDirectMessage_id());
+           tempDTO.setMessage(directMessage.getMessage());
+           tempDTO.setTimestamp(directMessage.getTimestamp());
+           tempDTO.setProfile(directMessage.getProfile());
+           tempDTO.setConversation(directMessage.getConversation());
+
+
+           //setting profile_id and conversation_id
+           tempDTO.setConversation_id(directMessage.getConversation().getConversation_id());
+           tempDTO.setProfile_id(directMessage.getProfile().getProfile_id());
+
+           directMessageDTOList.add(tempDTO);
+       });
+
+
+       return directMessageDTOList;
     }
 
 }
