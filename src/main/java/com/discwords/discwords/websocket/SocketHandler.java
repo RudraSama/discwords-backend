@@ -1,10 +1,15 @@
 package com.discwords.discwords.websocket;
+import com.discwords.discwords.model.DirectMessageDTO;
 import com.discwords.discwords.model.Profile;
 import com.discwords.discwords.repository.ProfileRepo;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
@@ -28,6 +33,7 @@ public class SocketHandler extends AbstractWebSocketHandler {
         sessions.add(session);
         Profile profile = (Profile) session.getAttributes().get("profile");
         profiles.put(session.getId(), profile);
+        System.out.println(profiles);
 
     }
 
@@ -35,5 +41,39 @@ public class SocketHandler extends AbstractWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception{
         sessions.remove(session);
     }
+
+    @Override
+    public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception{
+
+            String msg = message.getPayload().toString();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(msg);
+            long profile_id = jsonNode.get("profile_id").asLong();
+            String user_message = jsonNode.get("message").asText();
+            long conversation_id = jsonNode.get("conversation_id").asLong();
+            long receiver_id = jsonNode.get("receiver_id").asLong();
+
+
+            DirectMessageDTO directMessageDTO = new DirectMessageDTO();
+            directMessageDTO.setMessage(user_message);
+            directMessageDTO.setProfile_id(profile_id);
+            directMessageDTO.setConversation_id(conversation_id);
+
+
+            for(String key: profiles.keySet()) {
+                if(receiver_id == profiles.get(key).getProfile_id()){
+                    for(WebSocketSession session1: sessions){
+                        if(session1.getId().equals(key)){
+                            session1.sendMessage(new TextMessage(user_message));
+                        }
+                    }
+                }
+            }
+
+
+
+
+    }
+
 
 }

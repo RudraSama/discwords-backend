@@ -1,7 +1,6 @@
 package com.discwords.discwords.controller;
 import com.discwords.discwords.model.ConversationDTO;
 import com.discwords.discwords.model.DirectMessageDTO;
-import com.discwords.discwords.repository.DirectMessageRepo;
 import com.discwords.discwords.service.DirectMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +29,8 @@ public class HomeController {
     //temp send message
     @PostMapping("/sendMessage")
     public void sendMessage(@RequestBody DirectMessageDTO directMessageDTO){
-        directMessageService.sendMessage(directMessageDTO.getConversation_id(), directMessageDTO.getProfile_id(), directMessageDTO.getMessage());
+
+        directMessageService.saveMessage(directMessageDTO.getConversation_id(), directMessageDTO.getProfile_id(), directMessageDTO.getMessage());
     }
 
     //temp get messages
