@@ -9,6 +9,10 @@ public class DirectMessageDTO {
     private long profile_id;
     private long conversation_id;
 
+
+    private Profile profile;
+    private Conversation conversation;
+
     public DirectMessageDTO(){}
 
     public DirectMessageDTO(long directMessage_id, String message, Date timestamp, long profile_id, long conversation_id) {
@@ -57,5 +61,22 @@ public class DirectMessageDTO {
 
     public void setConversation_id(long conversation_id) {
         this.conversation_id = conversation_id;
+    }
+
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+    public Conversation getConversation() {
+        return conversation;
+    }
+
+    public void setConversation(Conversation conversation) {
+        this.conversation = conversation;
     }
 }
