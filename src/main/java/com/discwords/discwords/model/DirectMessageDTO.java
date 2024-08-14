@@ -1,7 +1,12 @@
 package com.discwords.discwords.model;
 
+import com.discwords.discwords.deserializer.DirectMessageDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.util.Date;
 
+
+@JsonDeserialize(using = DirectMessageDeserializer.class)
 public class DirectMessageDTO {
     private long directMessage_id;
     private String message;
@@ -62,7 +67,6 @@ public class DirectMessageDTO {
     public void setConversation_id(long conversation_id) {
         this.conversation_id = conversation_id;
     }
-
 
     public Profile getProfile() {
         return profile;
