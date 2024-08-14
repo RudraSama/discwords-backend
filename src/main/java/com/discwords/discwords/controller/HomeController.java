@@ -38,7 +38,6 @@ public class HomeController {
     public List<DirectMessageDTO> getMessages(@PathVariable  long conversation_id){
 
         List<DirectMessageDTO> messages = directMessageService.getMessages(conversation_id);
-        System.out.println("Profile ID   "+messages.get(0).getProfile().getProfile_id());
         return messages;
     }
 
