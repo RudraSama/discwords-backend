@@ -75,6 +75,7 @@ public class DirectMessageServiceServiceImpl implements DirectMessageService {
 
     @Override
     public void sendMessage(long conversation_id, long profile_id, String message){
+
         Optional<Conversation> conversation = conversationRepo.findById(conversation_id);
         Optional<Profile> profile = profileRepo.findById(profile_id);
 
@@ -93,6 +94,8 @@ public class DirectMessageServiceServiceImpl implements DirectMessageService {
         newDirectMessage.setTimestamp(new Date());
 
         directMessageRepo.save(newDirectMessage);
+
+
 
 
     }
