@@ -1,0 +1,9 @@
+package com.discwords.discwords.service;
+
+import com.discwords.discwords.model.DirectMessageDTO;
+
+public interface DirectChatService {
+
+    public void sendMessageToConvId(DirectMessageDTO messageDTO);
+
+}
