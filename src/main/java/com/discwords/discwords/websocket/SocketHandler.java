@@ -1,7 +1,9 @@
 package com.discwords.discwords.websocket;
 import com.discwords.discwords.model.DirectMessageDTO;
 import com.discwords.discwords.model.Profile;
+import com.discwords.discwords.repository.DirectMessageRepo;
 import com.discwords.discwords.repository.ProfileRepo;
+import com.discwords.discwords.service.DirectMessageService;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +28,16 @@ public class SocketHandler extends AbstractWebSocketHandler {
 
     private List<WebSocketSession> sessions = new ArrayList<WebSocketSession>();
     private Map<String, Profile> profiles = new HashMap<String, Profile>();
+
+
+    private DirectMessageService directMessageService;
+
+
+    public SocketHandler() {}
+    public SocketHandler(DirectMessageService directMessageService){
+        this.directMessageService = directMessageService;
+    }
+
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception{
@@ -53,12 +65,7 @@ public class SocketHandler extends AbstractWebSocketHandler {
             long conversation_id = jsonNode.get("conversation_id").asLong();
             long receiver_id = jsonNode.get("receiver_id").asLong();
 
-
-            DirectMessageDTO directMessageDTO = new DirectMessageDTO();
-            directMessageDTO.setMessage(user_message);
-            directMessageDTO.setProfile_id(profile_id);
-            directMessageDTO.setConversation_id(conversation_id);
-
+            directMessageService.saveMessage(conversation_id, profile_id, user_message);
 
             for(String key: profiles.keySet()) {
                 if(receiver_id == profiles.get(key).getProfile_id()){

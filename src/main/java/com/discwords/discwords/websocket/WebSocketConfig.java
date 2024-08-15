@@ -1,5 +1,6 @@
 package com.discwords.discwords.websocket;
 import com.discwords.discwords.repository.ProfileRepo;
+import com.discwords.discwords.service.DirectMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -11,9 +12,12 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfig implements WebSocketConfigurer {
 
     @Autowired
-    ProfileRepo profileRepo;
+    private ProfileRepo profileRepo;
+
+    @Autowired
+    private DirectMessageService directMessageService;
 
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry){
-        registry.addHandler(new SocketHandler(), "/user").addInterceptors(new HttpHandshakeInceptor(profileRepo));
+        registry.addHandler(new SocketHandler(directMessageService), "/user").addInterceptors(new HttpHandshakeInceptor(profileRepo));
     }
 }

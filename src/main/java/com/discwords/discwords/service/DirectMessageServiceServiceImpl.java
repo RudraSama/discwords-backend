@@ -6,6 +6,7 @@ import com.discwords.discwords.repository.ConversationRepo;
 import com.discwords.discwords.repository.DirectMessageRepo;
 import com.discwords.discwords.repository.ProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -73,7 +74,10 @@ public class DirectMessageServiceServiceImpl implements DirectMessageService {
         return conversationDTO;
     }
 
+
+
     @Override
+    @Async
     public void saveMessage(long conversation_id, long profile_id, String message){
 
         Optional<Conversation> conversation = conversationRepo.findById(conversation_id);
