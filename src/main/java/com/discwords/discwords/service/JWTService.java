@@ -3,6 +3,7 @@ import com.discwords.discwords.model.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -43,6 +44,10 @@ public class JWTService {
        return getAllClaims(token).get("email");
     }
 
+    public Object extractUserId(String token){
+        return getAllClaims(token).get("id");
+    }
+
     public Claims getAllClaims(String token)
     {
         return Jwts.parserBuilder()
@@ -64,6 +69,18 @@ public class JWTService {
     public boolean isTokenValid(String token, User user) {
         final String username = extractEmail(token).toString();
         return (username.equals(user.getEmail()) && isTokenExpired(token));
+    }
+
+
+    public boolean validJwtToken(String token){
+        try{
+            Jwts.parser().setSigningKey(Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.secretKey)));
+            return true;
+        }
+        catch (MalformedJwtException exception){
+            throw exception;
+        }
+
     }
 
 
