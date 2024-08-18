@@ -13,23 +13,13 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class DirectMessageWebSocketController {
 
-
-    @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
-
     @Autowired
     private DirectChatServiceImpl directChatService;
 
-//    @MessageMapping("/chat.sendMessage")
-//    public void sendMessage(ChatMessage chatMessage){
-//        System.out.println(chatMessage.getConversation_id());
-//        simpMessagingTemplate.convertAndSend("/topic/"+chatMessage.getConversation_id(), chatMessage);
-//
-//    }
+    @MessageMapping("/queue/conversation")
+    public DirectMessageDTO sendMessageToConvId(@Payload DirectMessageDTO messageDTO){
 
-    @MessageMapping("/topic/conversation/{conversation_id}")
-    public DirectMessageDTO sendMessageToConvId(@Payload DirectMessageDTO messageDTO,@DestinationVariable("conversation_id") String conversation_id){
-        directChatService.sendMessageToConvId(messageDTO);
+        directChatService.sendMessageToConv(messageDTO);
         return messageDTO;
 
     }

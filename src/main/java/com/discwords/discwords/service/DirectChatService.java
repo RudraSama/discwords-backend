@@ -4,6 +4,6 @@ import com.discwords.discwords.model.DirectMessageDTO;
 
 public interface DirectChatService {
 
-    public void sendMessageToConvId(DirectMessageDTO messageDTO);
+    public void sendMessageToConv(DirectMessageDTO messageDTO);
 
 }
