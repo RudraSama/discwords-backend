@@ -11,6 +11,8 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -19,7 +21,6 @@ public class WebTokenFilter implements ChannelInterceptor {
 
     private JWTService jwtService;
     private UserRepo userRepo;
-
 
     public WebTokenFilter(JWTService jwtService, UserRepo userRepo){
         this.jwtService = jwtService;
@@ -34,6 +35,7 @@ public class WebTokenFilter implements ChannelInterceptor {
 
         if(StompCommand.CONNECT == accessor.getCommand()){
            String token = accessor.getFirstNativeHeader("access_token");
+
            if(jwtService.validJwtToken(token)){
 
                String email = jwtService.extractEmail(token).toString();
@@ -43,6 +45,7 @@ public class WebTokenFilter implements ChannelInterceptor {
                if (userOptional.isEmpty()){
                    throw new RuntimeException("Invalid User");
                }
+
 
            }
            else{

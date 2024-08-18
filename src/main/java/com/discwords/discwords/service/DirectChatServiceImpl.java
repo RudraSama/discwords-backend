@@ -15,12 +15,9 @@ public class DirectChatServiceImpl implements DirectChatService {
     }
 
     @Override
-    public void sendMessageToConvId(DirectMessageDTO messageDTO){
+    public void sendMessageToConv(DirectMessageDTO messageDTO){
 
-        long conversation_id = messageDTO.getConversation_id();
-        System.out.println(messageDTO.getMessage() + " " + messageDTO.getProfile_id());
-
-        simpMessageSendingOperations.convertAndSend("/topic/conversation/" + conversation_id, messageDTO);
+        simpMessageSendingOperations.convertAndSend("/queue/conversation", messageDTO);
 
     }
 }
