@@ -1,7 +1,6 @@
 package com.discwords.discwords.service;
 
 import com.discwords.discwords.exception.UsernameAlreadyExist;
-import com.discwords.discwords.exception.UserAlreadyExist;
 
 
 import com.discwords.discwords.model.*;
@@ -15,8 +14,10 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.Date;
@@ -105,13 +106,13 @@ public class LoginSignupServiceImpl implements LoginSignupService {
 //        checking if email already exists
         Optional<User> userRes = userRepo.findByEmail(user.getEmail());
         if (!userRes.isEmpty()) {
-            throw new UserAlreadyExist("User Email already exist");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exist");
         }
 
 //       checking if username already exists
         Optional<User> tempUserRes = userRepo.findByUsername(user.getUsername());
         if (!tempUserRes.isEmpty()) {
-            throw new UsernameAlreadyExist("username already exist");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username exist");
         }
 
 
@@ -129,6 +130,7 @@ public class LoginSignupServiceImpl implements LoginSignupService {
         Profile profile = new Profile();
         profile.setUser_id(newUser.getUserId());
         profile.setEmail(newUser.getEmail());
+        System.out.println(newUser.getUsername());
         profile.setUsername(newUser.getUsername());
         profileRepo.save(profile);
 
