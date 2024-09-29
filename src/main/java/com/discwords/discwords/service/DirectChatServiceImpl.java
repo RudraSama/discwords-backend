@@ -15,10 +15,11 @@ public class DirectChatServiceImpl implements DirectChatService {
     }
 
     @Override
-    public void sendMessageToConv(DirectMessageDTO messageDTO, String conversation_id){
-
-        simpMessageSendingOperations.convertAndSend("/queue/conversation/"+conversation_id, messageDTO);
+    public void sendMessageToConv(DirectMessageDTO messageDTO, String conversation_id, String receiver_id){
+        System.out.println("i'm receiver id " + receiver_id);
+        simpMessageSendingOperations.convertAndSend("/topic/conversation/"+conversation_id + "/" + receiver_id, messageDTO);
 
     }
 }
+
 
