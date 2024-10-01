@@ -1,13 +1,8 @@
 package com.discwords.discwords.websocket;
-import com.discwords.discwords.model.DirectMessageDTO;
 import com.discwords.discwords.model.Profile;
-import com.discwords.discwords.repository.DirectMessageRepo;
-import com.discwords.discwords.repository.ProfileRepo;
 import com.discwords.discwords.service.DirectMessageService;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -15,10 +10,7 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
-import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.*;
 
 
@@ -68,7 +60,7 @@ public class SocketHandler extends AbstractWebSocketHandler {
         directMessageService.saveMessage(conversation_id, profile_id, user_message);
 
         for(String key: profiles.keySet()) {
-            if(receiver_id == profiles.get(key).getProfile_id()){
+            if(receiver_id == profiles.get(key).getProfileId()){
                 for(WebSocketSession session1: sessions){
                     if(session1.getId().equals(key)){
                         session1.sendMessage(new TextMessage(user_message));

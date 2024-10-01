@@ -135,7 +135,7 @@ public class DirectMessageServiceServiceImpl implements DirectMessageService {
 
            //setting profile_id and conversation_id
            tempDTO.setConversation_id(directMessage.getConversation().getConversation_id());
-           tempDTO.setProfile_id(directMessage.getProfile().getProfile_id());
+           tempDTO.setProfile_id(directMessage.getProfile().getProfileId());
 
            directMessageDTOList.add(tempDTO);
        });

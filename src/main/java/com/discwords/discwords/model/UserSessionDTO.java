@@ -1,28 +1,25 @@
 package com.discwords.discwords.model;
 
 public class UserSessionDTO {
-    private UserSession userSession;
-    private User user;
+    private Profile profile;
+    private String token;
 
     public UserSessionDTO(){}
-    public UserSessionDTO(UserSession userSession, User user) {
-        this.userSession = userSession;
-        this.user = user;
+    public UserSessionDTO( Profile profile, String token) {
+        this.profile = profile;
+        this.token = token;
     }
 
-    public User getUser() {
-        return user;
+    public Profile getProfile() {
+        return profile;
     }
-
-    public void setUser(User user) {
-        this.user = user;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
-
-    public UserSession getUserSession() {
-        return userSession;
+    public String getToken() {
+        return token;
     }
-
-    public void setUserSession(UserSession userSession) {
-        this.userSession = userSession;
+    public void setToken(UserSession userSession) {
+        this.token = token;
     }
 }

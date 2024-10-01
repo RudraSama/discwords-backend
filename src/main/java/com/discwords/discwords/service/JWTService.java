@@ -29,7 +29,6 @@ public class JWTService {
         return createToken(claims);
     }
 
-
     public String createToken(Map<String, Object> claims){
         return Jwts.builder()
                 .setClaims(claims)
@@ -40,12 +39,17 @@ public class JWTService {
                 .compact();
 
     }
+
     public Object extractEmail(String token){
        return getAllClaims(token).get("email");
     }
 
     public Object extractUserId(String token){
         return getAllClaims(token).get("id");
+    }
+
+    public Object extractExpiryDate(String token){
+        return getAllClaims(token).getExpiration();
     }
 
     public Claims getAllClaims(String token)
@@ -57,7 +61,6 @@ public class JWTService {
                 .getBody();
     }
 
-
     public boolean isTokenExpired(String token){
         Date expiryDate = getAllClaims(token).getExpiration();
         System.out.println(expiryDate);
@@ -65,12 +68,10 @@ public class JWTService {
         return expiryDate.after(new Date());
     }
 
-
     public boolean isTokenValid(String token, User user) {
         final String username = extractEmail(token).toString();
         return (username.equals(user.getEmail()) && isTokenExpired(token));
     }
-
 
     public boolean validJwtToken(String token){
         try{
@@ -82,7 +83,6 @@ public class JWTService {
         }
 
     }
-
 
     private SecretKey getSigningKey(){
         byte[] keyBytes = Decoders.BASE64.decode(this.secretKey);

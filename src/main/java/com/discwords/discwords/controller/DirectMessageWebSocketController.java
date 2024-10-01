@@ -10,14 +10,15 @@ import org.springframework.stereotype.Controller;
 
 
 @Controller
-public class DirectMessageWebSocketController {
+public class
+DirectMessageWebSocketController {
 
     @Autowired
     private DirectChatServiceImpl directChatService;
 
     @MessageMapping("/topic/conversation/{conversation_id}/{receiver_id}")
     public DirectMessageDTO sendMessageToConvId(@Payload DirectMessageDTO messageDTO, @DestinationVariable("conversation_id") String conversation_id, @DestinationVariable("receiver_id") String receiver_id){
-        System.out.println(messageDTO.getMessage());
+        System.out.println(receiver_id);
         directChatService.sendMessageToConv(messageDTO, conversation_id, receiver_id);
         return messageDTO;
     }
