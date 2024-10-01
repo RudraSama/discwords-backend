@@ -1,7 +1,5 @@
 package com.discwords.discwords.service;
 
-import com.discwords.discwords.exception.UsernameAlreadyExist;
-
 
 import com.discwords.discwords.model.*;
 import com.discwords.discwords.repository.ProfileRepo;
@@ -24,7 +22,7 @@ import java.util.Date;
 import java.util.Optional;
 
 @Service
-public class LoginSignupServiceImpl implements LoginSignupService {
+public class AuthorizationServiceImpl implements AuthorizationService {
 
     @Autowired
     private UserRepo userRepo;
@@ -46,10 +44,8 @@ public class LoginSignupServiceImpl implements LoginSignupService {
     private String CLIENT_ID;
 
 
-    //method to login user
     @Override
-    public UserSessionDTO loginUser(UserDTO user) {
-        System.out.println("hiiii from backend");
+    public UserSessionDTO loginUser(UserDTO user) throws Exception {
         Optional<User> userRes = userRepo.findByEmail(user.getEmail());
         if (userRes.isEmpty()) {
             System.out.println("User not found");
@@ -58,14 +54,21 @@ public class LoginSignupServiceImpl implements LoginSignupService {
 
         User existingUser = userRes.get();
 
+        Optional<Profile> profileRes = profileRepo.findByUserId(existingUser.getUserId());
+        if(profileRes.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Profile with this user id");
+        }
+        Profile profile = profileRes.get();
+
         Optional<UserSession> userSessionRes = sessionRepo.findByUserId(existingUser.getUserId());
         if (userSessionRes.isPresent()) {
             UserSession userSession = userSessionRes.get();
             if (userSession.getSessionEndTime().before(new Date())) {
+                System.out.println("Deleting User session for new");
                 sessionRepo.delete(userSession);
             } else {
                 System.out.println("User already logged in");
-                return new UserSessionDTO(userSession, existingUser);
+                return new UserSessionDTO(profile, userSession.getToken());
             }
         }
 
@@ -78,7 +81,6 @@ public class LoginSignupServiceImpl implements LoginSignupService {
 
         UserSecret userSecret = userSecretRes.get();
 
-
         if (BCrypt.checkpw(user.getPassword(), userSecret.getPassword())) {
             String jwtToken = jwtService.generateToken(existingUser.getEmail(), Long.toString(existingUser.getUserId()));
             int newSessionId = (int) (System.currentTimeMillis() / 100000);
@@ -86,13 +88,12 @@ public class LoginSignupServiceImpl implements LoginSignupService {
                     existingUser.getUserId(),
                     jwtToken,
                     new Date(),
-                    new Date(System.currentTimeMillis() + 1296000000L),
+                    (Date)jwtService.extractExpiryDate(jwtToken),
                     newSessionId
             );
+
             UserSession userSession = sessionRepo.save(newUserSession);
-            UserSessionDTO userSessionDTO = new UserSessionDTO();
-            userSessionDTO.setUser(existingUser);
-            userSessionDTO.setUserSession(userSession);
+            UserSessionDTO userSessionDTO = new UserSessionDTO(profile, userSession.getToken());
 
             return userSessionDTO;
 
@@ -100,8 +101,9 @@ public class LoginSignupServiceImpl implements LoginSignupService {
         return null;
     }
 
+
     @Override
-    public UserSessionDTO signupUser(UserDTO user) {
+    public UserSessionDTO signupUser(UserDTO user) throws Exception {
 
 //        checking if email already exists
         Optional<User> userRes = userRepo.findByEmail(user.getEmail());
@@ -128,7 +130,7 @@ public class LoginSignupServiceImpl implements LoginSignupService {
 
         //creating profile
         Profile profile = new Profile();
-        profile.setUser_id(newUser.getUserId());
+        profile.setUserId(newUser.getUserId());
         profile.setEmail(newUser.getEmail());
         System.out.println(newUser.getUsername());
         profile.setUsername(newUser.getUsername());
@@ -145,15 +147,13 @@ public class LoginSignupServiceImpl implements LoginSignupService {
                 newUser.getUserId(),
                 jwtToken,
                 new Date(),
-                new Date(System.currentTimeMillis() + 1296000000L),
+                (Date)jwtService.extractExpiryDate(jwtToken),
                 newSessionId
         );
         UserSession userSession = sessionRepo.save(newUserSession);
 
 
-        UserSessionDTO userSessionDTO = new UserSessionDTO();
-        userSessionDTO.setUser(newUser);
-        userSessionDTO.setUserSession(userSession);
+        UserSessionDTO userSessionDTO = new UserSessionDTO(profile, userSession.getToken());
 
         return userSessionDTO;
     }
@@ -182,19 +182,27 @@ public class LoginSignupServiceImpl implements LoginSignupService {
             User newUser = new User(userId, userEmail, username);
             userRepo.save(newUser);
 
+            Profile profile = new Profile();
+            profile.setUserId(newUser.getUserId());
+            profile.setEmail(newUser.getEmail());
+            System.out.println(newUser.getUsername());
+            profile.setUsername(newUser.getUsername());
+            profileRepo.save(profile);
+
+
             String jwtToken = jwtService.generateToken(newUser.getEmail(), Long.toString(newUser.getUserId()));
             int newSessionId = (int) (System.currentTimeMillis() / 100000);
             UserSession newUserSession = new UserSession(
                     newUser.getUserId(),
                     jwtToken,
                     new Date(),
-                    new Date(System.currentTimeMillis() + 1296000000L),
+                    (Date)jwtService.extractExpiryDate(jwtToken),
                     newSessionId
             );
 
-            UserSessionDTO userSessionDTO = new UserSessionDTO();
-            userSessionDTO.setUser(newUser);
-            userSessionDTO.setUserSession(newUserSession);
+            UserSession userSession = sessionRepo.save(newUserSession);
+
+            UserSessionDTO userSessionDTO = new UserSessionDTO(profile, userSession.getToken());
 
             return userSessionDTO;
         }
@@ -222,6 +230,13 @@ public class LoginSignupServiceImpl implements LoginSignupService {
 
             User existingUser = userRes.get();
 
+            Optional<Profile> profileRes = profileRepo.findByUserId(existingUser.getUserId());
+            if(profileRes.isEmpty()){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Profile with this user id");
+            }
+            Profile profile = profileRes.get();
+
+
             Optional<UserSession> userSessionRes = sessionRepo.findByUserId(existingUser.getUserId());
             if (userSessionRes.isPresent()) {
                 UserSession userSession = userSessionRes.get();
@@ -229,6 +244,7 @@ public class LoginSignupServiceImpl implements LoginSignupService {
                     sessionRepo.delete(userSession);
                 } else {
                     System.out.println("User already logged in");
+                    return new UserSessionDTO(profile, userSession.getToken());
                 }
             } else {
                 String jwtToken = jwtService.generateToken(existingUser.getEmail(), Long.toString(existingUser.getUserId()));
@@ -237,15 +253,12 @@ public class LoginSignupServiceImpl implements LoginSignupService {
                         existingUser.getUserId(),
                         jwtToken,
                         new Date(),
-                        new Date(System.currentTimeMillis() + 1296000000L),
+                        (Date)jwtService.extractExpiryDate(jwtToken),
                         newSessionId
                 );
                 UserSession userSession = sessionRepo.save(newUserSession);
 
-                UserSessionDTO userSessionDTO = new UserSessionDTO();
-                userSessionDTO.setUser(existingUser);
-                userSessionDTO.setUserSession(userSession);
-
+                UserSessionDTO userSessionDTO = new UserSessionDTO(profile, userSession.getToken());
 
                 return userSessionDTO;
 
@@ -255,7 +268,30 @@ public class LoginSignupServiceImpl implements LoginSignupService {
         return null;
     }
 
+    //using token
+    @Override
+    public boolean authorizeUser(String jwtToken) {
 
+        long userId = Long.valueOf((String)jwtService.extractUserId(jwtToken));
+        Date tokenExpiryDate = (Date) jwtService.extractExpiryDate(jwtToken);
+        Optional<UserSession> userSessionRes = sessionRepo.findByUserId(userId);
+
+        if(userSessionRes.isEmpty()){
+            return false;
+        }
+
+        UserSession userSession = userSessionRes.get();
+
+        if(userSession.getSessionEndTime().before(new Date()) || tokenExpiryDate.before(new Date())){
+            sessionRepo.delete(userSession);
+            return false;
+        }
+
+        return true;
+    }
+
+
+    //TODO - Making Util package for all these stuff
     private Long generateId() {
         Long time = System.currentTimeMillis();
         time = time % 1000000000;

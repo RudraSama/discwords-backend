@@ -35,19 +35,19 @@ public class Profile {
         this.email = email;
     }
 
-    public long getProfile_id() {
+    public long getProfileId() {
         return profile_id;
     }
 
-    public void setProfile_id(long profile_id) {
+    public void setProfileId(long profile_id) {
         this.profile_id = profile_id;
     }
 
-    public long getUser_id() {
+    public long getUserId() {
         return user_id;
     }
 
-    public void setUser_id(long user_id) {
+    public void setUserId(long user_id) {
         this.user_id = user_id;
     }
 
@@ -59,11 +59,11 @@ public class Profile {
         this.username = username;
     }
 
-    public String getPicture_url() {
+    public String getPictureUrl() {
         return picture_url;
     }
 
-    public void setPicture_url(String picture_url) {
+    public void setPictureUrl(String picture_url) {
         this.picture_url = picture_url;
     }
 
