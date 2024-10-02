@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class DirectChatServiceImpl implements DirectChatService {
 
 
-    private SimpMessageSendingOperations simpMessageSendingOperations;
+    private final SimpMessageSendingOperations simpMessageSendingOperations;
 
     public DirectChatServiceImpl(SimpMessageSendingOperations simpMessageSendingOperations) {
         this.simpMessageSendingOperations = simpMessageSendingOperations;
@@ -16,9 +16,7 @@ public class DirectChatServiceImpl implements DirectChatService {
 
     @Override
     public void sendMessageToConv(DirectMessageDTO messageDTO, String conversation_id, String receiver_id){
-        System.out.println("i'm receiver id " + receiver_id);
         simpMessageSendingOperations.convertAndSend("/topic/conversation/"+conversation_id + "/" + receiver_id, messageDTO);
-
     }
 }
 

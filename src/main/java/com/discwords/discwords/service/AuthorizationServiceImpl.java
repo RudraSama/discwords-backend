@@ -11,6 +11,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -23,6 +25,8 @@ import java.util.Optional;
 
 @Service
 public class AuthorizationServiceImpl implements AuthorizationService {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final UserRepo userRepo;
     private final UserSecretRepo userSecretRepo;
@@ -91,7 +95,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 //       checking if username already exists
         Optional<User> tempUserRes = userRepo.findByUsername(user.getUsername());
         if (tempUserRes.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username exist");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exist");
         }
 
         String password = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());

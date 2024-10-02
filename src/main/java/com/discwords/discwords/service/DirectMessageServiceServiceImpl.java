@@ -18,14 +18,16 @@ import java.util.Optional;
 @Service
 public class DirectMessageServiceServiceImpl implements DirectMessageService {
 
-    @Autowired
-    ConversationRepo conversationRepo;
+    private final ConversationRepo conversationRepo;
+    private final ProfileRepo profileRepo;
+    private final DirectMessageRepo directMessageRepo;
 
-    @Autowired
-    ProfileRepo profileRepo;
+    public DirectMessageServiceServiceImpl(ConversationRepo conversationRepo, ProfileRepo profileRepo, DirectMessageRepo directMessageRepo) {
+        this.conversationRepo = conversationRepo;
+        this.profileRepo = profileRepo;
+        this.directMessageRepo = directMessageRepo;
+    }
 
-    @Autowired
-    DirectMessageRepo directMessageRepo;
 
     @Override
     public ConversationDTO createConversation(long profile_id_one, long profile_id_two){
@@ -40,11 +42,9 @@ public class DirectMessageServiceServiceImpl implements DirectMessageService {
             throw new RuntimeException("Profile Id Two is invalid");
         }
 
-
         Conversation newConversation = new Conversation();
         newConversation.setProfile(profile.get());
         newConversation.setProfile2(profile2.get());
-
 
         Conversation conversation = conversationRepo.save(newConversation);
 
@@ -98,9 +98,6 @@ public class DirectMessageServiceServiceImpl implements DirectMessageService {
         newDirectMessage.setTimestamp(new Date());
 
         directMessageRepo.save(newDirectMessage);
-
-
-
 
     }
 
