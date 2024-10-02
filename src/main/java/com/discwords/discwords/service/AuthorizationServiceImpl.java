@@ -1,6 +1,7 @@
 package com.discwords.discwords.service;
 
 
+import com.discwords.discwords.common.Utils;
 import com.discwords.discwords.model.*;
 import com.discwords.discwords.repository.ProfileRepo;
 import com.discwords.discwords.repository.SessionRepo;
@@ -10,7 +11,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -24,21 +24,20 @@ import java.util.Optional;
 @Service
 public class AuthorizationServiceImpl implements AuthorizationService {
 
-    @Autowired
-    private UserRepo userRepo;
+    private final UserRepo userRepo;
+    private final UserSecretRepo userSecretRepo;
+    private final SessionRepo sessionRepo;
+    private final ProfileRepo profileRepo;
+    private final JWTService jwtService;
 
-    @Autowired
-    private UserSecretRepo userSecretRepo;
+    public AuthorizationServiceImpl(UserRepo userRepo, UserSecretRepo userSecretRepo, SessionRepo sessionRepo, ProfileRepo profileRepo, JWTService jwtService) {
+        this.userRepo = userRepo;
+        this.userSecretRepo = userSecretRepo;
+        this.sessionRepo = sessionRepo;
+        this.profileRepo = profileRepo;
+        this.jwtService = jwtService;
+    }
 
-    @Autowired
-    private SessionRepo sessionRepo;
-
-
-    @Autowired
-    private ProfileRepo profileRepo;
-
-    @Autowired
-    JWTService jwtService;
 
     @Value("${google_client_id}")
     private String CLIENT_ID;
@@ -60,43 +59,21 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         }
         Profile profile = profileRes.get();
 
-        Optional<UserSession> userSessionRes = sessionRepo.findByUserId(existingUser.getUserId());
-        if (userSessionRes.isPresent()) {
-            UserSession userSession = userSessionRes.get();
-            if (userSession.getSessionEndTime().before(new Date())) {
-                System.out.println("Deleting User session for new");
-                sessionRepo.delete(userSession);
-            } else {
-                System.out.println("User already logged in");
-                return new UserSessionDTO(profile, userSession.getToken());
-            }
+        UserSessionDTO userSessionDTO = handleUserSession(existingUser, profile);
+
+        if(userSessionDTO != null){
+            return userSessionDTO;
         }
 
         Optional<UserSecret> userSecretRes = userSecretRepo.findById(existingUser.getUserId());
-
         if (userSecretRes.isEmpty()) {
-            System.out.println("User secret is empty");
             return null;
         }
 
         UserSecret userSecret = userSecretRes.get();
-
         if (BCrypt.checkpw(user.getPassword(), userSecret.getPassword())) {
-            String jwtToken = jwtService.generateToken(existingUser.getEmail(), Long.toString(existingUser.getUserId()));
-            int newSessionId = (int) (System.currentTimeMillis() / 100000);
-            UserSession newUserSession = new UserSession(
-                    existingUser.getUserId(),
-                    jwtToken,
-                    new Date(),
-                    (Date)jwtService.extractExpiryDate(jwtToken),
-                    newSessionId
-            );
-
-            UserSession userSession = sessionRepo.save(newUserSession);
-            UserSessionDTO userSessionDTO = new UserSessionDTO(profile, userSession.getToken());
-
-            return userSessionDTO;
-
+            UserSession userSession = createUserSession(existingUser);
+            return new UserSessionDTO(profile, userSession.getToken());
         }
         return null;
     }
@@ -107,55 +84,30 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
 //        checking if email already exists
         Optional<User> userRes = userRepo.findByEmail(user.getEmail());
-        if (!userRes.isEmpty()) {
+        if (userRes.isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exist");
         }
 
 //       checking if username already exists
         Optional<User> tempUserRes = userRepo.findByUsername(user.getUsername());
-        if (!tempUserRes.isEmpty()) {
+        if (tempUserRes.isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Username exist");
         }
 
-
         String password = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-        Long userId = generateId();
 
+        long userId = Utils.generateId();
         User newUser = new User(userId, user.getEmail(), user.getUsername());
         userRepo.save(newUser);
 
         UserSecret newUserSecret = new UserSecret(userId, password);
         userSecretRepo.save(newUserSecret);
 
-
-        //creating profile
-        Profile profile = new Profile();
-        profile.setUserId(newUser.getUserId());
-        profile.setEmail(newUser.getEmail());
-        System.out.println(newUser.getUsername());
-        profile.setUsername(newUser.getUsername());
+        Profile profile = new Profile(Utils.generateId(), newUser.getUserId(), newUser.getUsername(), newUser.getEmail(), "");
         profileRepo.save(profile);
 
-
-
-        //token generation
-
-        String jwtToken = jwtService.generateToken(newUser.getEmail(), Long.toString(newUser.getUserId()));
-
-        int newSessionId = (int) (System.currentTimeMillis() / 100000);
-        UserSession newUserSession = new UserSession(
-                newUser.getUserId(),
-                jwtToken,
-                new Date(),
-                (Date)jwtService.extractExpiryDate(jwtToken),
-                newSessionId
-        );
-        UserSession userSession = sessionRepo.save(newUserSession);
-
-
-        UserSessionDTO userSessionDTO = new UserSessionDTO(profile, userSession.getToken());
-
-        return userSessionDTO;
+        UserSession userSession = createUserSession(newUser);
+        return new  UserSessionDTO(profile, userSession.getToken());
     }
 
     @Override
@@ -176,37 +128,18 @@ public class AuthorizationServiceImpl implements AuthorizationService {
                 return loginUserWithGoogle(tokenRequestDTO);
             }
 
-            long userId = generateId();
+            long userId = Utils.generateId();
             String username = userEmail.split("@")[0];
 
             User newUser = new User(userId, userEmail, username);
             userRepo.save(newUser);
 
-            Profile profile = new Profile();
-            profile.setUserId(newUser.getUserId());
-            profile.setEmail(newUser.getEmail());
-            System.out.println(newUser.getUsername());
-            profile.setUsername(newUser.getUsername());
+            Profile profile = new Profile(Utils.generateId(), newUser.getUserId(), newUser.getUsername(), newUser.getEmail(), "");
             profileRepo.save(profile);
 
-
-            String jwtToken = jwtService.generateToken(newUser.getEmail(), Long.toString(newUser.getUserId()));
-            int newSessionId = (int) (System.currentTimeMillis() / 100000);
-            UserSession newUserSession = new UserSession(
-                    newUser.getUserId(),
-                    jwtToken,
-                    new Date(),
-                    (Date)jwtService.extractExpiryDate(jwtToken),
-                    newSessionId
-            );
-
-            UserSession userSession = sessionRepo.save(newUserSession);
-
-            UserSessionDTO userSessionDTO = new UserSessionDTO(profile, userSession.getToken());
-
-            return userSessionDTO;
+            UserSession userSession = createUserSession(newUser);
+            return new UserSessionDTO(profile, userSession.getToken());
         }
-
         return null;
     }
 
@@ -236,35 +169,15 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             }
             Profile profile = profileRes.get();
 
+            UserSessionDTO userSessionDTO = handleUserSession(existingUser, profile);
 
-            Optional<UserSession> userSessionRes = sessionRepo.findByUserId(existingUser.getUserId());
-            if (userSessionRes.isPresent()) {
-                UserSession userSession = userSessionRes.get();
-                if (userSession.getSessionEndTime().before(new Date())) {
-                    sessionRepo.delete(userSession);
-                } else {
-                    System.out.println("User already logged in");
-                    return new UserSessionDTO(profile, userSession.getToken());
-                }
-            } else {
-                String jwtToken = jwtService.generateToken(existingUser.getEmail(), Long.toString(existingUser.getUserId()));
-                int newSessionId = (int) (System.currentTimeMillis() / 100000);
-                UserSession newUserSession = new UserSession(
-                        existingUser.getUserId(),
-                        jwtToken,
-                        new Date(),
-                        (Date)jwtService.extractExpiryDate(jwtToken),
-                        newSessionId
-                );
-                UserSession userSession = sessionRepo.save(newUserSession);
-
-                UserSessionDTO userSessionDTO = new UserSessionDTO(profile, userSession.getToken());
-
+            if(userSessionDTO != null){
                 return userSessionDTO;
-
             }
-        }
 
+            UserSession userSession = createUserSession(existingUser);
+            return new UserSessionDTO(profile, userSession.getToken());
+        }
         return null;
     }
 
@@ -272,7 +185,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public boolean authorizeUser(String jwtToken) {
 
-        long userId = Long.valueOf((String)jwtService.extractUserId(jwtToken));
+        long userId = Long.parseLong((String)jwtService.extractUserId(jwtToken));
         Date tokenExpiryDate = (Date) jwtService.extractExpiryDate(jwtToken);
         Optional<UserSession> userSessionRes = sessionRepo.findByUserId(userId);
 
@@ -286,20 +199,43 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             sessionRepo.delete(userSession);
             return false;
         }
-
         return true;
     }
 
 
-    //TODO - Making Util package for all these stuff
-    private Long generateId() {
-        Long time = System.currentTimeMillis();
-        time = time % 1000000000;
-        time = time * 1000;
-        time = time + (long) (Math.random() * 1000);
+    private UserSessionDTO handleUserSession(User existingUser, Profile profile){
+        if(existingUser == null){
+            return null;
+        }
 
-        return time;
+        Optional<UserSession> userSessionRes = sessionRepo.findByUserId(existingUser.getUserId());
+
+        if(userSessionRes.isPresent()){
+            UserSession userSession = userSessionRes.get();
+
+            if(userSession.getSessionEndTime().before(new Date())){
+                sessionRepo.delete(userSession);
+            }
+            else{
+                return new UserSessionDTO(profile, userSession.getToken());
+            }
+        }
+        return null;
     }
 
+    private UserSession createUserSession(User user){
+        //generating jwt token
+        String jwtToken = jwtService.generateToken(user.getEmail(), Long.toString(user.getUserId()));
+        int newSessionId = (int) (System.currentTimeMillis() / 100000);
+        UserSession newUserSession = new UserSession(
+                user.getUserId(),
+                jwtToken,
+                new Date(),
+                (Date)jwtService.extractExpiryDate(jwtToken),
+                newSessionId
+        );
+
+        return sessionRepo.save(newUserSession);
+    }
 }
 
