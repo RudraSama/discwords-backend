@@ -10,7 +10,6 @@ import java.util.List;
 @Entity
 public class Profile {
    @Id
-   @GeneratedValue(strategy = GenerationType.AUTO)
    private long profile_id;
    private long user_id;
    private String username;
@@ -27,7 +26,7 @@ public class Profile {
 
    public Profile(){}
 
-    public Profile(long profile_id, long user_id, String username, String picture_url, String email) {
+    public Profile(long profile_id, long user_id, String username, String email, String picture_url) {
         this.profile_id = profile_id;
         this.user_id = user_id;
         this.username = username;
