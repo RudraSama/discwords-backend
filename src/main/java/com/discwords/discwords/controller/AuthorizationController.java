@@ -1,6 +1,7 @@
 package com.discwords.discwords.controller;
 
 
+import com.discwords.discwords.model.Profile;
 import com.discwords.discwords.model.TokenRequestDTO;
 import com.discwords.discwords.model.UserDTO;
 import com.discwords.discwords.model.UserSessionDTO;
@@ -54,7 +55,7 @@ public class AuthorizationController {
     }
 
     @PostMapping("/api/checkAuthorization")
-    public ResponseEntity<Boolean> checkAuthorizationHandler(@RequestHeader(value = "x-access-token") String token){
+    public ResponseEntity<Profile> checkAuthorizationHandler(@RequestHeader(value = "x-access-token") String token){
         return new ResponseEntity<>(authorizationService.authorizeUser(token), HttpStatus.ACCEPTED);
     }
 
