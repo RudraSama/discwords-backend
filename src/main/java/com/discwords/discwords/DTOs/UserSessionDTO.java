@@ -1,4 +1,7 @@
-package com.discwords.discwords.model;
+package com.discwords.discwords.DTOs;
+
+import com.discwords.discwords.model.Profile;
+import com.discwords.discwords.model.UserSession;
 
 public class UserSessionDTO {
     private Profile profile;

@@ -1,4 +1,4 @@
-package com.discwords.discwords.model;
+package com.discwords.discwords.DTOs;
 
 public class TokenRequestDTO {
     private String tokenId;

@@ -1,6 +1,9 @@
 package com.discwords.discwords.service;
 
 
+import com.discwords.discwords.DTOs.TokenRequestDTO;
+import com.discwords.discwords.DTOs.UserDTO;
+import com.discwords.discwords.DTOs.UserSessionDTO;
 import com.discwords.discwords.common.Utils;
 import com.discwords.discwords.model.*;
 import com.discwords.discwords.repository.ProfileRepo;
@@ -189,8 +192,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public Profile authorizeUser(String jwtToken) {
 
+
         long userId = Long.parseLong((String)jwtService.extractUserId(jwtToken));
-        Date tokenExpiryDate = (Date) jwtService.extractExpiryDate(jwtToken);
         Optional<UserSession> userSessionRes = sessionRepo.findByUserId(userId);
 
         if(userSessionRes.isEmpty()){
@@ -200,7 +203,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         UserSession userSession = userSessionRes.get();
 
-        if(userSession.getSessionEndTime().before(new Date()) || tokenExpiryDate.before(new Date())){
+        if(userSession.getSessionEndTime().before(new Date()) || !jwtService.isTokenExpired(jwtToken)){
             sessionRepo.delete(userSession);
             //need to return Exception instead of null
             return null;

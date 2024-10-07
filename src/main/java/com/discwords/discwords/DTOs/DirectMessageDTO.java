@@ -1,6 +1,8 @@
-package com.discwords.discwords.model;
+package com.discwords.discwords.DTOs;
 
 import com.discwords.discwords.deserializer.DirectMessageDeserializer;
+import com.discwords.discwords.model.Conversation;
+import com.discwords.discwords.model.Profile;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.Date;

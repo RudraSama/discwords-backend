@@ -1,8 +1,8 @@
 package com.discwords.discwords.service;
 
-import com.discwords.discwords.model.TokenRequestDTO;
-import com.discwords.discwords.model.UserDTO;
-import com.discwords.discwords.model.UserSessionDTO;
+import com.discwords.discwords.DTOs.TokenRequestDTO;
+import com.discwords.discwords.DTOs.UserDTO;
+import com.discwords.discwords.DTOs.UserSessionDTO;
 import com.discwords.discwords.model.Profile;
 
 public interface AuthorizationService {

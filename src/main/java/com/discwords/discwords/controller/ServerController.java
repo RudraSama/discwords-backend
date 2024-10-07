@@ -1,8 +1,7 @@
 package com.discwords.discwords.controller;
 
 
-import com.discwords.discwords.model.Server;
-import com.discwords.discwords.model.ServerDTO;
+import com.discwords.discwords.DTOs.ServerDTO;
 import com.discwords.discwords.service.ServerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
