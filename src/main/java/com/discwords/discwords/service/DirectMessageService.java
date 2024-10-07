@@ -1,8 +1,8 @@
 package com.discwords.discwords.service;
 
 
-import com.discwords.discwords.model.ConversationDTO;
-import com.discwords.discwords.model.DirectMessageDTO;
+import com.discwords.discwords.DTOs.ConversationDTO;
+import com.discwords.discwords.DTOs.DirectMessageDTO;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.List;

@@ -1,4 +1,7 @@
-package com.discwords.discwords.model;
+package com.discwords.discwords.DTOs;
+
+import com.discwords.discwords.model.DirectMessage;
+import com.discwords.discwords.model.Profile;
 
 import java.util.List;
 

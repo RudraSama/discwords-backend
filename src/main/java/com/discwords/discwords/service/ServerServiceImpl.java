@@ -1,10 +1,7 @@
 package com.discwords.discwords.service;
 
 
-import com.discwords.discwords.model.Channel;
-import com.discwords.discwords.model.MemberList;
-import com.discwords.discwords.model.Server;
-import com.discwords.discwords.model.ServerDTO;
+import com.discwords.discwords.DTOs.ServerDTO;
 import com.discwords.discwords.repository.ServerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

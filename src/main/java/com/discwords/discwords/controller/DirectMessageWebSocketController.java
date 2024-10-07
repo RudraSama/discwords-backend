@@ -1,6 +1,6 @@
 package com.discwords.discwords.controller;
 
-import com.discwords.discwords.model.DirectMessageDTO;
+import com.discwords.discwords.DTOs.DirectMessageDTO;
 import com.discwords.discwords.service.DirectChatServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;

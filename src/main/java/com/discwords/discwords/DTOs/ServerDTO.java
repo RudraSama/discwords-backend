@@ -1,4 +1,7 @@
-package com.discwords.discwords.model;
+package com.discwords.discwords.DTOs;
+
+import com.discwords.discwords.model.Channel;
+import com.discwords.discwords.model.MemberList;
 
 import java.util.List;
 

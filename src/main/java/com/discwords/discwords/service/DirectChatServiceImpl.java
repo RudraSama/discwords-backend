@@ -1,6 +1,6 @@
 package com.discwords.discwords.service;
 
-import com.discwords.discwords.model.DirectMessageDTO;
+import com.discwords.discwords.DTOs.DirectMessageDTO;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 

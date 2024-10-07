@@ -1,6 +1,6 @@
 package com.discwords.discwords.service;
 
-import com.discwords.discwords.model.ServerDTO;
+import com.discwords.discwords.DTOs.ServerDTO;
 
 import java.util.List;
 

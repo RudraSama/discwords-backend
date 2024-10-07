@@ -1,11 +1,12 @@
 package com.discwords.discwords.service;
 
 
+import com.discwords.discwords.DTOs.ConversationDTO;
+import com.discwords.discwords.DTOs.DirectMessageDTO;
 import com.discwords.discwords.model.*;
 import com.discwords.discwords.repository.ConversationRepo;
 import com.discwords.discwords.repository.DirectMessageRepo;
 import com.discwords.discwords.repository.ProfileRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 

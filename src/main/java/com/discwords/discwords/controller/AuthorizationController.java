@@ -2,9 +2,9 @@ package com.discwords.discwords.controller;
 
 
 import com.discwords.discwords.model.Profile;
-import com.discwords.discwords.model.TokenRequestDTO;
-import com.discwords.discwords.model.UserDTO;
-import com.discwords.discwords.model.UserSessionDTO;
+import com.discwords.discwords.DTOs.TokenRequestDTO;
+import com.discwords.discwords.DTOs.UserDTO;
+import com.discwords.discwords.DTOs.UserSessionDTO;
 import com.discwords.discwords.service.AuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,7 +54,8 @@ public class AuthorizationController {
         return new ResponseEntity<>(authorizationService.signupUserWithGoogle(tokenRequest), HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/api/checkAuthorization")
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/api/checkAuthorization")
     public ResponseEntity<Profile> checkAuthorizationHandler(@RequestHeader(value = "x-access-token") String token){
         return new ResponseEntity<>(authorizationService.authorizeUser(token), HttpStatus.ACCEPTED);
     }

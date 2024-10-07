@@ -1,7 +1,7 @@
 package com.discwords.discwords.deserializer;
 
 
-import com.discwords.discwords.model.DirectMessageDTO;
+import com.discwords.discwords.DTOs.DirectMessageDTO;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

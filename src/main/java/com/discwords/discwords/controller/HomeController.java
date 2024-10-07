@@ -1,6 +1,6 @@
 package com.discwords.discwords.controller;
-import com.discwords.discwords.model.ConversationDTO;
-import com.discwords.discwords.model.DirectMessageDTO;
+import com.discwords.discwords.DTOs.ConversationDTO;
+import com.discwords.discwords.DTOs.DirectMessageDTO;
 import com.discwords.discwords.service.DirectMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

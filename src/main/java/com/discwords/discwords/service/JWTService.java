@@ -7,7 +7,10 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -20,6 +23,8 @@ public class JWTService {
 
     @Value("${jwt_secret_key}")
     private String secretKey;
+
+    private final Logger LOGGER = LogManager.getLogger();
 
     public String generateToken(String email, String id){
         Map<String, Object> claims = new HashMap<>();
@@ -41,15 +46,15 @@ public class JWTService {
     }
 
     public Object extractEmail(String token){
-       return getAllClaims(token).get("email");
+       return validJwtToken(token)?getAllClaims(token).get("email"):null;
     }
 
     public Object extractUserId(String token){
-        return getAllClaims(token).get("id");
+        return validJwtToken(token)?getAllClaims(token).get("id"):null;
     }
 
     public Object extractExpiryDate(String token){
-        return getAllClaims(token).getExpiration();
+        return validJwtToken(token)?getAllClaims(token).getExpiration():null;
     }
 
     public Claims getAllClaims(String token)
@@ -63,8 +68,6 @@ public class JWTService {
 
     public boolean isTokenExpired(String token){
         Date expiryDate = getAllClaims(token).getExpiration();
-        System.out.println(expiryDate);
-        System.out.println(new Date());
         return expiryDate.after(new Date());
     }
 
@@ -75,7 +78,7 @@ public class JWTService {
 
     public boolean validJwtToken(String token){
         try{
-            Jwts.parser().setSigningKey(Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.secretKey)));
+            Jwts.parser().setSigningKey(Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.secretKey))).parseClaimsJws(token);
             return true;
         }
         catch (MalformedJwtException exception){
