@@ -5,6 +5,7 @@ import com.discwords.discwords.DTOs.TokenRequestDTO;
 import com.discwords.discwords.DTOs.UserDTO;
 import com.discwords.discwords.DTOs.UserSessionDTO;
 import com.discwords.discwords.common.Utils;
+import com.discwords.discwords.exceptions.UsernameAlreadyExists;
 import com.discwords.discwords.model.*;
 import com.discwords.discwords.repository.ProfileRepo;
 import com.discwords.discwords.repository.SessionRepo;
@@ -98,7 +99,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 //       checking if username already exists
         Optional<User> tempUserRes = userRepo.findByUsername(user.getUsername());
         if (tempUserRes.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exist");
+            throw new UsernameAlreadyExists();
         }
 
         String password = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
@@ -112,7 +113,6 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         Profile profile = new Profile(Utils.generateId(), newUser.getUserId(), newUser.getUsername(), newUser.getEmail(), "");
         profileRepo.save(profile);
-
         UserSession userSession = createUserSession(newUser);
         return new  UserSessionDTO(profile, userSession.getToken());
     }
