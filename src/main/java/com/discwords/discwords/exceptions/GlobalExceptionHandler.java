@@ -21,4 +21,20 @@ public class GlobalExceptionHandler {
         ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(500, exception.getMessage());
         return new ResponseEntity<>(errorResponseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(UsernameAlreadyExists.class)
+    public ResponseEntity<ErrorResponseDTO> handleUsernameAlreadyExistsException(UsernameAlreadyExists exception){
+        LOGGER.error("Exception Occurred: {}", exception.getMessage());
+
+        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(409, exception.getMessage());
+        return new ResponseEntity<>(errorResponseDTO, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(UserAlreadyExists.class)
+    public ResponseEntity<ErrorResponseDTO> handleUserAlreadyExistsException(UserAlreadyExists exception){
+        LOGGER.error("Exception Occurred : {}", exception.getMessage());
+
+        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(409, exception.getMessage());
+        return new ResponseEntity<>(errorResponseDTO, HttpStatus.CONFLICT);
+    }
 }
