@@ -15,4 +15,7 @@ public interface ProfileRepo extends JpaRepository<Profile, Long> {
     @Query(nativeQuery = true, value = "SELECT * FROM profile WHERE user_id = :user_id LIMIT 1;")
     Optional<Profile> findByUserId(@Param("user_id") long user_id);
 
+    @Query(nativeQuery = true, value = "SELECT * FROM profile WHERE username = :username LIMIT 1;")
+    Optional<Profile> findByUsername(@Param("username") String username);
+
 }
