@@ -1,21 +1,17 @@
 package com.discwords.discwords.model;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
-public class FriendList {
-
+public class FriendRequest {
     @Id
     private long profile_id1;
     private long profile_id2;
 
-    public FriendList(){}
-
-    public FriendList(long user1_id, long user2_id) {
-        this.profile_id1 = user1_id;
-        this.profile_id2 = user2_id;
+    public FriendRequest(long profile_id1, long profile_id2) {
+        this.profile_id1 = profile_id1;
+        this.profile_id2 = profile_id2;
     }
 
     public long getProfile_id1() {

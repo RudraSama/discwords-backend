@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class AuthorizationController {
 
-    @Autowired
-    AuthorizationService authorizationService;
+    private final AuthorizationService authorizationService;
+
+    public AuthorizationController(AuthorizationService authorizationService){
+        this.authorizationService = authorizationService;
+    }
 
 
     //register
