@@ -24,8 +24,8 @@ public class UserInteractionController {
         return new ResponseEntity<>(userInteractionService.handleFriendRequest(friendRequestDTO), HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/api/fetchRequests")
-    public ResponseEntity<List<FetchFriendRequestDTO>> handleFetchFriendRequests(@RequestHeader(value = "profile_id") String profile_id){
+    @GetMapping("/api/fetchFriendRequests/{profile_id}")
+    public ResponseEntity<List<FetchFriendRequestDTO>> handleFetchFriendRequests(@PathVariable String profile_id){
         return new ResponseEntity<List<FetchFriendRequestDTO>>(userInteractionService.handleFetchFriendRequests(Long.parseLong(profile_id)), HttpStatus.ACCEPTED);
     }
 }
