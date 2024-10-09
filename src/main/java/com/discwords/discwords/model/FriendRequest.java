@@ -1,32 +1,45 @@
 package com.discwords.discwords.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
 public class FriendRequest {
+
     @Id
-    private long profile_id1;
-    private long profile_id2;
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    private long id;
+    private long sender_id;
+    private long receiver_id;
+
+    public FriendRequest(){};
 
     public FriendRequest(long profile_id1, long profile_id2) {
-        this.profile_id1 = profile_id1;
-        this.profile_id2 = profile_id2;
+        this.sender_id = profile_id1;
+        this.receiver_id = profile_id2;
     }
 
-    public long getProfile_id1() {
-        return profile_id1;
+    public FriendRequest(long profile_id1, long profile_id2, long id) {
+        this.id = id;
+        this.sender_id = profile_id1;
+        this.receiver_id = profile_id2;
     }
 
-    public void setProfile_id1(long profile_id1) {
-        this.profile_id1 = profile_id1;
+    public long getSender_id() {
+        return sender_id;
     }
 
-    public long getProfile_id2() {
-        return profile_id2;
+    public void setSender_id(long sender_id) {
+        this.sender_id = sender_id;
     }
 
-    public void setProfile_id2(long profile_id2) {
-        this.profile_id2 = profile_id2;
+    public long getReceiver_id() {
+        return receiver_id;
+    }
+
+    public void setReceiver_id(long receiver_id) {
+        this.receiver_id = receiver_id;
     }
 }
