@@ -10,4 +10,6 @@ public interface UserInteractionService {
 
     public String handleFriendRequest(FriendRequestDTO friendRequestDTO);
     public List<FetchFriendRequestDTO> handleFetchFriendRequests(long profile_id);
+    public String handleFriendRequestAccept(long id);
+    public String handleFriendRequestReject(long id);
 }

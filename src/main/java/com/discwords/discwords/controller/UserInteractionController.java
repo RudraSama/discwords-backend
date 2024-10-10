@@ -20,12 +20,22 @@ public class UserInteractionController {
 
     @PostMapping("/api/addFriend")
     public ResponseEntity<String> handleFriendRequest(@RequestBody FriendRequestDTO friendRequestDTO){
-        System.out.println("friend request frontend request");
         return new ResponseEntity<>(userInteractionService.handleFriendRequest(friendRequestDTO), HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/api/fetchFriendRequests/{profile_id}")
     public ResponseEntity<List<FetchFriendRequestDTO>> handleFetchFriendRequests(@PathVariable String profile_id){
-        return new ResponseEntity<List<FetchFriendRequestDTO>>(userInteractionService.handleFetchFriendRequests(Long.parseLong(profile_id)), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(userInteractionService.handleFetchFriendRequests(Long.parseLong(profile_id)), HttpStatus.ACCEPTED);
+    }
+
+    //we are getting id of row from FriendRequest table
+    @PostMapping("/api/acceptFriendRequest/{id}")
+    public ResponseEntity<String> handleFriendRequestAccept(@PathVariable String id){
+        return new ResponseEntity<>(userInteractionService.handleFriendRequestAccept(Long.parseLong(id)), HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/api/rejectFriendRequest/{id}")
+    public ResponseEntity<String> handleFriendRequestReject(@PathVariable String id){
+        return new ResponseEntity<>(userInteractionService.handleFriendRequestReject(Long.parseLong(id)), HttpStatus.ACCEPTED);
     }
 }

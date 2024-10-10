@@ -12,8 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface FriendListRepo extends JpaRepository<FriendList, Long> {
-    @Query(nativeQuery = true, value = "SELECT * FROM friend_list WHERE (sender_id = :sender_id AND receiver_id = :receiver_id) OR (sender_id = :receiver_id AND receiver_id = :sender_id) LIMIT 1;")
+    @Query(nativeQuery = true, value = "SELECT * FROM friend_list WHERE (profile_id1 = :sender_id AND profile_id2 = :receiver_id) OR (profile_id1 = :receiver_id AND profile_id2 = :sender_id) LIMIT 1;")
     Optional<FriendList> findIfFriend(@Param("sender_id") long sender_id, @Param("receiver_id") long receiver_id);
-
 
 }
