@@ -18,10 +18,15 @@ public class FriendList {
 
     public FriendList(){}
 
-    public FriendList(long user1_id, long user2_id, long id) {
+    public FriendList(long profile_id1, long profile_id2) {
+        this.profile_id1 = profile_id1;
+        this.profile_id2 = profile_id2;
+    }
+
+    public FriendList(long id, long profile_id1, long profile_id2) {
         this.id = id;
-        this.profile_id1 = user1_id;
-        this.profile_id2 = user2_id;
+        this.profile_id1 = profile_id1;
+        this.profile_id2 = profile_id2;
     }
 
     public long getProfile_id1() {
