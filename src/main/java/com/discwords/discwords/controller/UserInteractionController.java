@@ -2,6 +2,7 @@ package com.discwords.discwords.controller;
 
 import com.discwords.discwords.DTOs.FetchFriendRequestDTO;
 import com.discwords.discwords.DTOs.FriendRequestDTO;
+import com.discwords.discwords.model.Profile;
 import com.discwords.discwords.service.UserInteractionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,12 +31,17 @@ public class UserInteractionController {
 
     //we are getting id of row from FriendRequest table
     @PostMapping("/api/acceptFriendRequest/{id}")
-    public ResponseEntity<String> handleFriendRequestAccept(@PathVariable String id){
-        return new ResponseEntity<>(userInteractionService.handleFriendRequestAccept(Long.parseLong(id)), HttpStatus.ACCEPTED);
+    public ResponseEntity<String> handleFriendRequestAccept(@PathVariable long id){
+        return new ResponseEntity<>(userInteractionService.handleFriendRequestAccept(id), HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/api/rejectFriendRequest/{id}")
-    public ResponseEntity<String> handleFriendRequestReject(@PathVariable String id){
-        return new ResponseEntity<>(userInteractionService.handleFriendRequestReject(Long.parseLong(id)), HttpStatus.ACCEPTED);
+    public ResponseEntity<String> handleFriendRequestReject(@PathVariable long id){
+        return new ResponseEntity<>(userInteractionService.handleFriendRequestReject(id), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/api/fetchFriends/{id}")
+    public ResponseEntity<List<Profile>> handleFetchFriends(@PathVariable long id){
+        return new ResponseEntity<>(userInteractionService.handleFetchFriends(id), HttpStatus.ACCEPTED);
     }
 }

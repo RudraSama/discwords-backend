@@ -83,4 +83,9 @@ public class UserInteractionServiceImpl implements UserInteractionService{
         return "success";
     }
 
+    @Override
+    public List<Profile> handleFetchFriends(long id){
+        return friendListRepo.findFriends(id);
+    }
+
 }
