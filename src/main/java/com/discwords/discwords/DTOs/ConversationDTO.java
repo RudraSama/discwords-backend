@@ -8,17 +8,23 @@ import java.util.List;
 public class ConversationDTO {
 
     private long conversation_id;
-    private Profile profile;
-    private Profile profile2;
-    private List<DirectMessage> directMessages;
+    private long profile_id1;
+    private long profile_id2;
+
+    private Profile friend_profile;
 
     public ConversationDTO(){}
 
-    public ConversationDTO(long conversation_id, Profile profile, Profile profile2, List<DirectMessage> directMessages) {
+    public ConversationDTO(long conversation_id, long profile_id1, long profile_id2) {
         this.conversation_id = conversation_id;
-        this.profile = profile;
-        this.profile2 = profile2;
-        this.directMessages = directMessages;
+        this.profile_id1 = profile_id1;
+        this.profile_id2 = profile_id2;
+    }
+
+    //constructor to get friend_profile from DB
+    public ConversationDTO(long conversation_id, long profile_id, long user_id, String username, String email, String picture_url){
+        this.conversation_id = conversation_id;
+        this.friend_profile = new Profile(profile_id, user_id, username, email, picture_url);
     }
 
     public long getConversation_id() {
@@ -29,27 +35,23 @@ public class ConversationDTO {
         this.conversation_id = conversation_id;
     }
 
-    public Profile getProfile() {
-        return profile;
+    public long getProfile_id1() {
+        return profile_id1;
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
+    public void setProfile_id1(long profile_id1) {
+        this.profile_id1 = profile_id1;
     }
 
-    public Profile getProfile2() {
-        return profile2;
+    public long getProfile_id2() {
+        return profile_id2;
     }
 
-    public void setProfile2(Profile profile2) {
-        this.profile2 = profile2;
+    public void setProfile_id2(long profile_id2) {
+        this.profile_id2 = profile_id2;
     }
 
-    public List<DirectMessage> getDirectMessages() {
-        return directMessages;
-    }
-
-    public void setDirectMessages(List<DirectMessage> directMessages) {
-        this.directMessages = directMessages;
+    public Profile getFriend_profile(){
+        return friend_profile;
     }
 }

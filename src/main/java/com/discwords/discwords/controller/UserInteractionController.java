@@ -1,5 +1,6 @@
 package com.discwords.discwords.controller;
 
+import com.discwords.discwords.DTOs.ConversationDTO;
 import com.discwords.discwords.DTOs.FetchFriendRequestDTO;
 import com.discwords.discwords.DTOs.FriendRequestDTO;
 import com.discwords.discwords.model.Profile;
@@ -43,5 +44,10 @@ public class UserInteractionController {
     @GetMapping("/api/fetchFriends/{id}")
     public ResponseEntity<List<Profile>> handleFetchFriends(@PathVariable long id){
         return new ResponseEntity<>(userInteractionService.handleFetchFriends(id), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/api/fetchConversations/{id}")
+    public ResponseEntity<List<ConversationDTO>> handleFetchConversations(@PathVariable long id){
+        return new ResponseEntity<>(userInteractionService.handleFetchConversations(id), HttpStatus.ACCEPTED);
     }
 }

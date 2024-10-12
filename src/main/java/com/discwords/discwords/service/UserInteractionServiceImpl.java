@@ -1,10 +1,12 @@
 package com.discwords.discwords.service;
 
+import com.discwords.discwords.DTOs.ConversationDTO;
 import com.discwords.discwords.DTOs.FetchFriendRequestDTO;
 import com.discwords.discwords.DTOs.FriendRequestDTO;
 import com.discwords.discwords.model.FriendList;
 import com.discwords.discwords.model.FriendRequest;
 import com.discwords.discwords.model.Profile;
+import com.discwords.discwords.repository.ConversationRepo;
 import com.discwords.discwords.repository.FriendListRepo;
 import com.discwords.discwords.repository.FriendRequestRepo;
 import com.discwords.discwords.repository.ProfileRepo;
@@ -23,11 +25,13 @@ public class UserInteractionServiceImpl implements UserInteractionService{
     private final ProfileRepo profileRepo;
     private final FriendListRepo friendListRepo;
     private final FriendRequestRepo friendRequestRepo;
+    private final ConversationRepo conversationRepo;
 
-    public UserInteractionServiceImpl(ProfileRepo profileRepo, FriendListRepo friendListRepo,  FriendRequestRepo friendRequestRepo){
+    public UserInteractionServiceImpl(ProfileRepo profileRepo, FriendListRepo friendListRepo,  FriendRequestRepo friendRequestRepo, ConversationRepo conversationRepo){
         this.profileRepo = profileRepo;
         this.friendListRepo = friendListRepo;
         this.friendRequestRepo = friendRequestRepo;
+        this.conversationRepo = conversationRepo;
     }
 
 
@@ -86,6 +90,11 @@ public class UserInteractionServiceImpl implements UserInteractionService{
     @Override
     public List<Profile> handleFetchFriends(long id){
         return friendListRepo.findFriends(id);
+    }
+
+    @Override
+    public List<ConversationDTO> handleFetchConversations(long id){
+        return conversationRepo.findConversation(id);
     }
 
 }
