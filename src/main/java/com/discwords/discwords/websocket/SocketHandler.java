@@ -57,7 +57,7 @@ public class SocketHandler extends AbstractWebSocketHandler {
         long conversation_id = jsonNode.get("conversation_id").asLong();
         long receiver_id = jsonNode.get("receiver_id").asLong();
 
-        directMessageService.saveMessage(conversation_id, profile_id, user_message);
+//        directMessageService.saveMessage(conversation_id, profile_id, user_message);
 
         for(String key: profiles.keySet()) {
             if(receiver_id == profiles.get(key).getProfileId()){

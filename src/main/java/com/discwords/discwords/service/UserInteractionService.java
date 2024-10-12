@@ -1,5 +1,6 @@
 package com.discwords.discwords.service;
 
+import com.discwords.discwords.DTOs.ConversationDTO;
 import com.discwords.discwords.DTOs.FetchFriendRequestDTO;
 import com.discwords.discwords.DTOs.FriendRequestDTO;
 import com.discwords.discwords.model.Profile;
@@ -14,4 +15,5 @@ public interface UserInteractionService {
     public String handleFriendRequestAccept(long id);
     public String handleFriendRequestReject(long id);
     public List<Profile> handleFetchFriends(long id);
+    public List<ConversationDTO> handleFetchConversations(long id);
 }

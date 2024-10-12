@@ -20,10 +20,6 @@ public class Profile {
    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL)
    private Member member;
 
-   @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
-   @JsonBackReference
-   private List<Conversation> conversations;
-
    public Profile(){}
 
     public Profile(long profile_id, long user_id, String username, String email, String picture_url) {
@@ -83,11 +79,4 @@ public class Profile {
         this.member = member;
     }
 
-    public List<Conversation> getConversations() {
-        return conversations;
-    }
-
-    public void setConversations(List<Conversation> conversations) {
-        this.conversations = conversations;
-    }
 }
