@@ -15,15 +15,6 @@ public class Channel {
     private String channel_name;
 
 
-    @OneToMany(mappedBy = "channel")
-    private List<Message> messages;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "server_id")
-    @JsonBackReference
-    private Server server;
-
-
 
     public Channel() {
     }
@@ -59,19 +50,4 @@ public class Channel {
         this.channel_name = channel_name;
     }
 
-    public Server getServer() {
-        return server;
-    }
-
-    public void setServer(Server server) {
-        this.server = server;
-    }
-
-    public List<Message> getMessages() {
-        return messages;
-    }
-
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
-    }
 }

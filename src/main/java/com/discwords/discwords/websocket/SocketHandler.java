@@ -1,6 +1,5 @@
 package com.discwords.discwords.websocket;
 import com.discwords.discwords.model.Profile;
-import com.discwords.discwords.service.DirectMessageService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Configuration;
@@ -21,14 +20,6 @@ public class SocketHandler extends AbstractWebSocketHandler {
     private List<WebSocketSession> sessions = new ArrayList<WebSocketSession>();
     private Map<String, Profile> profiles = new HashMap<String, Profile>();
 
-
-    private DirectMessageService directMessageService;
-
-
-    public SocketHandler() {}
-    public SocketHandler(DirectMessageService directMessageService){
-        this.directMessageService = directMessageService;
-    }
 
 
     @Override

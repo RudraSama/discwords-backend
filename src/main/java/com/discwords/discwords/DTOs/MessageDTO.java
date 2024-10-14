@@ -1,33 +1,26 @@
-package com.discwords.discwords.model;
+package com.discwords.discwords.DTOs;
 
-import jakarta.persistence.*;
+import com.discwords.discwords.model.Profile;
 
 import java.util.Date;
 
-@Entity
-public class Message {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long message_id;
 
-    //Message can be of either Channel or Conversation (one to one)
+//@JsonDeserialize(using = DirectMessageDeserializer.class)
+public class MessageDTO {
+    private long message_id;
     private long conversation_id;
-    private long channel_id;
-    private long sender_id;
+    private Profile sender_profile;
     private String message;
     private Date timestamp;
 
 
+    public MessageDTO(){}
 
-
-    public Message(){}
-
-    public Message(long message_id, long conversation_id, long channel_id, String message, long sender_id, Date timestamp) {
+    public MessageDTO(long message_id, long conversation_id,  Profile sender_profile, String message, Date timestamp) {
         this.message_id = message_id;
-        this.channel_id = channel_id;
         this.conversation_id = conversation_id;
+        this.sender_profile = sender_profile;
         this.message = message;
-        this.sender_id = sender_id;
         this.timestamp = timestamp;
     }
 
@@ -47,12 +40,12 @@ public class Message {
         this.conversation_id = conversation_id;
     }
 
-    public long getChannel_id() {
-        return channel_id;
+    public Profile getSender_profile() {
+        return sender_profile;
     }
 
-    public void setChannel_id(long channel_id) {
-        this.channel_id = channel_id;
+    public void setSender_profile(Profile sender_profile) {
+        this.sender_profile = sender_profile;
     }
 
     public String getMessage() {
@@ -63,7 +56,6 @@ public class Message {
         this.message = message;
     }
 
-
     public Date getTimestamp() {
         return timestamp;
     }
@@ -72,12 +64,6 @@ public class Message {
         this.timestamp = timestamp;
     }
 
-    public long getSender_id() {
-        return sender_id;
-    }
 
-    public void setSender_id(long sender_id) {
-        this.sender_id = sender_id;
-    }
 
 }
