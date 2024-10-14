@@ -15,5 +15,5 @@ public interface UserInteractionService {
     public String handleFriendRequestAccept(long id);
     public String handleFriendRequestReject(long id);
     public List<Profile> handleFetchFriends(long id);
-    public List<ConversationDTO> handleFetchConversations(long id);
+
 }

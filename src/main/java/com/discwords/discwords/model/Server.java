@@ -11,8 +11,6 @@ public class Server {
     private long server_id;
     private String server_name;
 
-    @OneToMany(mappedBy = "server")
-    private List<Channel> channels;
 
     @OneToMany(mappedBy = "server", fetch = FetchType.LAZY)
     private List<MemberList> memberLists;
@@ -42,15 +40,7 @@ public class Server {
     public void setServer_id(long server_id) {
         this.server_id = server_id;
     }
-
-
-    public List<Channel> getChannels() {
-        return channels;
-    }
-
-    public void setChannels(List<Channel> channels) {
-        this.channels = channels;
-    }
+    
 
     public List<MemberList> getMemberLists() {
         return memberLists;

@@ -1,9 +1,6 @@
 package com.discwords.discwords.DTOs;
 
-import com.discwords.discwords.model.DirectMessage;
 import com.discwords.discwords.model.Profile;
-
-import java.util.List;
 
 public class ConversationDTO {
 
@@ -30,7 +27,7 @@ public class ConversationDTO {
     public long getConversation_id() {
         return conversation_id;
     }
-
+j
     public void setConversation_id(long conversation_id) {
         this.conversation_id = conversation_id;
     }

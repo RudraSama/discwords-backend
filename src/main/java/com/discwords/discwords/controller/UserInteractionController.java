@@ -46,8 +46,4 @@ public class UserInteractionController {
         return new ResponseEntity<>(userInteractionService.handleFetchFriends(id), HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/api/fetchConversations/{id}")
-    public ResponseEntity<List<ConversationDTO>> handleFetchConversations(@PathVariable long id){
-        return new ResponseEntity<>(userInteractionService.handleFetchConversations(id), HttpStatus.ACCEPTED);
-    }
 }

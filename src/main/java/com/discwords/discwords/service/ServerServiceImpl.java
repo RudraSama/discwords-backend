@@ -19,12 +19,12 @@ public class ServerServiceImpl implements ServerService{
 
     @Override
     public List<ServerDTO> getServers(){
-        List<ServerDTO> serverDTOList = new ArrayList<ServerDTO>();
-        serverRepo.findAll().forEach(server->{
-            serverDTOList.add(new ServerDTO(server.getServer_id(), server.getServer_name(), server.getChannels(), server.getMemberLists()));
-        });
-
-        return serverDTOList;
+//        List<ServerDTO> serverDTOList = new ArrayList<ServerDTO>();
+//        serverRepo.findAll().forEach(server->{
+//            serverDTOList.add(new ServerDTO(server.getServer_id(), server.getServer_name(), server.getChannels(), server.getMemberLists()));
+//        });
+//
+        return null;
 
     }
 }
