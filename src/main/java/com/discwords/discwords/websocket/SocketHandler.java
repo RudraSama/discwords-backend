@@ -37,33 +37,4 @@ public class SocketHandler extends AbstractWebSocketHandler {
         sessions.remove(session);
     }
 
-    @Override
-    public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception{
-
-        String msg = message.getPayload().toString();
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(msg);
-        long profile_id = jsonNode.get("profile_id").asLong();
-        String user_message = jsonNode.get("message").asText();
-        long conversation_id = jsonNode.get("conversation_id").asLong();
-        long receiver_id = jsonNode.get("receiver_id").asLong();
-
-//        directMessageService.saveMessage(conversation_id, profile_id, user_message);
-
-        for(String key: profiles.keySet()) {
-            if(receiver_id == profiles.get(key).getProfileId()){
-                for(WebSocketSession session1: sessions){
-                    if(session1.getId().equals(key)){
-                        session1.sendMessage(new TextMessage(user_message));
-                    }
-                }
-            }
-        }
-
-
-
-
-    }
-
-
 }
