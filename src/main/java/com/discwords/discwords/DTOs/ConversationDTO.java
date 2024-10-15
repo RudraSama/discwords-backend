@@ -27,7 +27,7 @@ public class ConversationDTO {
     public long getConversation_id() {
         return conversation_id;
     }
-j
+    
     public void setConversation_id(long conversation_id) {
         this.conversation_id = conversation_id;
     }

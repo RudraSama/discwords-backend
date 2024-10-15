@@ -21,7 +21,7 @@ public class DiscwordsApplication {
 		executor.setCorePoolSize(2);
 		executor.setMaxPoolSize(2);
 		executor.setQueueCapacity(500);
-		executor.setThreadNamePrefix("DirectMessage-");
+		executor.setThreadNamePrefix("Message-");
 		executor.initialize();
 		return executor;
 	}
