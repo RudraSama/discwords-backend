@@ -7,8 +7,9 @@ import java.util.List;
 
 public interface ConversationService {
 
+    public ConversationDTO handleCreateConversation(ConversationDTO conversationDTO);
     public List<ConversationDTO> handleFetchConversations(long id);
-    public ConversationDTO handleFetchConversation(long conversation_id, long profile_id);
+    public ConversationDTO handleFetchConversation(long profile_id, long conversation_id);
     public void sendMessageToConv(MessageDTO messageDTO, String conversation_id, String receiver_id);
 
 }

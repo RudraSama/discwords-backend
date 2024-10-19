@@ -1,6 +1,5 @@
 package com.discwords.discwords.controller;
 
-import com.discwords.discwords.DTOs.ConversationDTO;
 import com.discwords.discwords.DTOs.FetchFriendRequestDTO;
 import com.discwords.discwords.DTOs.FriendRequestDTO;
 import com.discwords.discwords.model.Profile;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class UserInteractionController {
 
