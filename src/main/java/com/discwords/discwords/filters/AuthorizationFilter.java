@@ -39,29 +39,24 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 
-        LOGGER.info("URL {}", request.getRequestURI());
-
         if(!request.getMethod().equals("OPTIONS") && request.getRequestURI().startsWith("/api")){
+
+            if(request.getRequestURI().equals("/api/checkAuthorization")){
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             String token = request.getHeader("x-access-token");
+            String userId = request.getHeader("userId");
+            String profileId = request.getHeader("profileId");
+
             if(token == null){
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }
-            else if(jwtService.validJwtToken(token)){
-                long userId = Long.parseLong((String)jwtService.extractUserId(token));
-                Optional<User> userRes = userRepo.findById(userId);
-                if(userRes.isEmpty()){
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    return;
-                }
-
-                Optional<Profile> profileRes = profileRepo.findByUserId(userId);
-
-                if(profileRes.isEmpty()){
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    return;
-                }
-                request.setAttribute("profileId", profileRes.get().getProfileId());
+            else if(!(jwtService.validJwtToken(token) && jwtService.isTokenValid(token, Long.parseLong(userId), Long.parseLong(profileId)))){
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return;
             }
         }
 

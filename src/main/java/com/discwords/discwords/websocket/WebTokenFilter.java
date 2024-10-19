@@ -27,18 +27,13 @@ public class WebTokenFilter implements ChannelInterceptor {
         this.userRepo = userRepo;
     }
 
-
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel messageChannel){
-
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
-        System.out.println(message.getPayload().toString());
         if(StompCommand.CONNECT == accessor.getCommand()){
-           String token = accessor.getFirstNativeHeader("access_token");
-
+           String token = accessor.getFirstNativeHeader("x-access-token");
            if(jwtService.validJwtToken(token)){
-
                String email = jwtService.extractEmail(token).toString();
 
                Optional<User> userOptional = userRepo.findByEmail(email);
@@ -46,15 +41,11 @@ public class WebTokenFilter implements ChannelInterceptor {
                if (userOptional.isEmpty()){
                    throw new RuntimeException("Invalid User");
                }
-
-
            }
            else{
                throw new RuntimeException("JWT Token not valid");
            }
         }
-
         return message;
     }
-
 }

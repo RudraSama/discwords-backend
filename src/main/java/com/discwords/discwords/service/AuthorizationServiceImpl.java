@@ -53,6 +53,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
     @Override
     public UserSessionDTO loginUser(UserDTO user) throws Exception {
+
         Optional<User> userRes = userRepo.findByEmail(user.getEmail());
         if (userRes.isEmpty()) {
             System.out.println("User not found");
@@ -74,13 +75,15 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         }
 
         Optional<UserSecret> userSecretRes = userSecretRepo.findById(existingUser.getUserId());
+
         if (userSecretRes.isEmpty()) {
             return null;
         }
 
         UserSecret userSecret = userSecretRes.get();
         if (BCrypt.checkpw(user.getPassword(), userSecret.getPassword())) {
-            UserSession userSession = createUserSession(existingUser);
+            UserSession userSession = createUserSession(profile);
+
             return new UserSessionDTO(profile, userSession.getToken());
         }
         return null;
@@ -113,7 +116,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         Profile profile = new Profile(Utils.generateId(), newUser.getUserId(), newUser.getUsername(), newUser.getEmail(), "");
         profileRepo.save(profile);
-        UserSession userSession = createUserSession(newUser);
+        UserSession userSession = createUserSession(profile);
         return new  UserSessionDTO(profile, userSession.getToken());
     }
 
@@ -144,7 +147,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             Profile profile = new Profile(Utils.generateId(), newUser.getUserId(), newUser.getUsername(), newUser.getEmail(), "");
             profileRepo.save(profile);
 
-            UserSession userSession = createUserSession(newUser);
+            UserSession userSession = createUserSession(profile);
             return new UserSessionDTO(profile, userSession.getToken());
         }
         return null;
@@ -182,7 +185,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
                 return userSessionDTO;
             }
 
-            UserSession userSession = createUserSession(existingUser);
+            UserSession userSession = createUserSession(profile);
             return new UserSessionDTO(profile, userSession.getToken());
         }
         return null;
@@ -235,12 +238,12 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         return null;
     }
 
-    private UserSession createUserSession(User user){
+    private UserSession createUserSession(Profile profile){
         //generating jwt token
-        String jwtToken = jwtService.generateToken(user.getEmail(), Long.toString(user.getUserId()));
+        String jwtToken = jwtService.generateToken(profile.getEmail(), Long.toString(profile.getUserId()), Long.toString(profile.getProfileId()));
         int newSessionId = (int) (System.currentTimeMillis() / 100000);
         UserSession newUserSession = new UserSession(
-                user.getUserId(),
+                profile.getUserId(),
                 jwtToken,
                 new Date(),
                 (Date)jwtService.extractExpiryDate(jwtToken),
