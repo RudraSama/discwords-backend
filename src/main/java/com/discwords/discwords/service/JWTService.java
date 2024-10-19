@@ -27,18 +27,19 @@ public class JWTService {
 
     private final Logger LOGGER = LogManager.getLogger();
 
-    public String generateToken(String email, String id){
+    public String generateToken(String email, String userId, String profileId){
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", email);
-        claims.put("id", id);
+        claims.put("userId", userId);
+        claims.put("profileId", profileId);
 
-        return createToken(claims);
+        return createToken(claims, userId);
     }
 
-    public String createToken(Map<String, Object> claims){
+    public String createToken(Map<String, Object> claims, String id){
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject("gaurav")
+                .setSubject(id)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 7776000000L))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -51,7 +52,11 @@ public class JWTService {
     }
 
     public Object extractUserId(String token){
-        return validJwtToken(token)?getAllClaims(token).get("id"):null;
+        return validJwtToken(token)?getAllClaims(token).get("userId"):null;
+    }
+
+    public Object extractProfileId(String token){
+        return validJwtToken(token)?getAllClaims(token).get("profileId"):null;
     }
 
     public Object extractExpiryDate(String token){
@@ -72,9 +77,8 @@ public class JWTService {
         return expiryDate.after(new Date());
     }
 
-    public boolean isTokenValid(String token, User user) {
-        final String username = extractEmail(token).toString();
-        return (username.equals(user.getEmail()) && isTokenExpired(token));
+    public boolean isTokenValid(String token, long userId, long profileId) {
+        return extractUserId(token).toString().equals(String.valueOf(userId)) && extractProfileId(token).toString().equals(String.valueOf(profileId)) && !isTokenExpired(token);
     }
 
     public boolean validJwtToken(String token){
