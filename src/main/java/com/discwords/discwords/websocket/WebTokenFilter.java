@@ -33,6 +33,7 @@ public class WebTokenFilter implements ChannelInterceptor {
 
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
+        System.out.println(message.getPayload().toString());
         if(StompCommand.CONNECT == accessor.getCommand()){
            String token = accessor.getFirstNativeHeader("access_token");
 

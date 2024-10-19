@@ -1,4 +1,5 @@
 package com.discwords.discwords.service;
+import com.discwords.discwords.exceptions.JWTMalformed;
 import com.discwords.discwords.model.User;
 
 import io.jsonwebtoken.Claims;
@@ -82,7 +83,7 @@ public class JWTService {
             return true;
         }
         catch (MalformedJwtException exception){
-            throw exception;
+            throw new JWTMalformed();
         }
 
     }

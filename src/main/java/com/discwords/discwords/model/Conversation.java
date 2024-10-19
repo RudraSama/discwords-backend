@@ -17,6 +17,11 @@ public class Conversation {
         this.profile_id2 = profile_id2;
     }
 
+    public Conversation(long profile_id1, long profile_id2) {
+        this.profile_id1 = profile_id1;
+        this.profile_id2 = profile_id2;
+    }
+
     public long getConversation_id() {
         return conversation_id;
     }

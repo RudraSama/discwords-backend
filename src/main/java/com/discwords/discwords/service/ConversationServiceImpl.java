@@ -2,6 +2,7 @@ package com.discwords.discwords.service;
 
 import com.discwords.discwords.DTOs.ConversationDTO;
 import com.discwords.discwords.DTOs.MessageDTO;
+import com.discwords.discwords.model.Conversation;
 import com.discwords.discwords.repository.ConversationRepo;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
@@ -23,13 +24,19 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
+    public ConversationDTO handleCreateConversation(ConversationDTO conversationDTO){
+        Conversation conversation = conversationRepo.save(new Conversation(conversationDTO.getProfile_id1(), conversationDTO.getProfile_id2()));
+        return new ConversationDTO(conversation.getConversation_id(),conversation.getProfile_id1(), conversation.getProfile_id2());
+    }
+
+    @Override
     public List<ConversationDTO> handleFetchConversations(long id){
         return conversationRepo.findConversations(id);
     }
 
     @Override
-    public ConversationDTO handleFetchConversation(long conversation_id, long profile_id){
-        return conversationRepo.findConversation(conversation_id, profile_id);
+    public ConversationDTO handleFetchConversation(long profile_id, long conversation_id){
+        return conversationRepo.findConversation(profile_id, conversation_id);
     }
 
     @Override

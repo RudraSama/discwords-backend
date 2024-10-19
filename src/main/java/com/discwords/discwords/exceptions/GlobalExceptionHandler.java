@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @ExceptionHandler(MalformedJwtException.class)
-    public ResponseEntity<ErrorResponseDTO> handleJWTMalformedExecption(MalformedJwtException exception){
+    @ExceptionHandler(JWTMalformed.class)
+    public ResponseEntity<ErrorResponseDTO> handleJWTMalformedException(JWTMalformed exception){
 
         LOGGER.error("Exception Occurred : ", exception);
 
