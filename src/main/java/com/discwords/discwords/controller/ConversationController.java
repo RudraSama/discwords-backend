@@ -30,14 +30,15 @@ public class ConversationController {
     }
 
     @GetMapping("/api/fetchConversations")
-    public ResponseEntity<List<ConversationDTO>> handleFetchConversations(HttpServletRequest request){
-        return new ResponseEntity<>(conversationService.handleFetchConversations((long)request.getAttribute("profileId")), HttpStatus.ACCEPTED);
+    public ResponseEntity<List<ConversationDTO>> handleFetchConversations(@RequestHeader("profileId") long profileId){
+        return new ResponseEntity<>(conversationService.handleFetchConversations(profileId),HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/api/fetchConversation/{conversation_id}")
-    public ResponseEntity<ConversationDTO> handleFetchConversation(HttpServletRequest request, @PathVariable("conversation_id") long conversation_id){
-        return new ResponseEntity<>(conversationService.handleFetchConversation((long)request.getAttribute("profileId"), conversation_id), HttpStatus.ACCEPTED);
+    public ResponseEntity<ConversationDTO> handleFetchConversation(@RequestHeader("profileId") long profileId, @PathVariable("conversation_id") long conversation_id){
+        return new ResponseEntity<>(conversationService.handleFetchConversation(profileId, conversation_id), HttpStatus.ACCEPTED);
     }
+
 
     @MessageMapping("/topic/conversation/{conversation_id}/{receiver_id}")
     public MessageDTO sendMessageToConvId(@Payload MessageDTO messageDTO, @DestinationVariable("conversation_id") String conversation_id, @DestinationVariable("receiver_id") String receiver_id){
