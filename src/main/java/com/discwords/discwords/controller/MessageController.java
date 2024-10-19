@@ -20,8 +20,8 @@ public class MessageController {
         this.messageService = messageService;
     }
 
-    @GetMapping("/api/fetchMessages/conversation/{id}")
-    public ResponseEntity<List<MessageDTO>> fetchConversationMessages(@PathVariable long id){
-        return new ResponseEntity<>(messageService.handleFetchConversationMessages(id), HttpStatus.ACCEPTED);
+    @GetMapping("/api/fetchMessages/conversation/{conversation_id}")
+    public ResponseEntity<List<MessageDTO>> fetchConversationMessages(@PathVariable long conversation_id){
+        return new ResponseEntity<>(messageService.handleFetchConversationMessages(conversation_id), HttpStatus.ACCEPTED);
     }
 }
