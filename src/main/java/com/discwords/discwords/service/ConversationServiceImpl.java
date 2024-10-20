@@ -24,8 +24,8 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
-    public ConversationDTO handleCreateConversation(ConversationDTO conversationDTO){
-        Conversation conversation = conversationRepo.save(new Conversation(conversationDTO.getProfile_id1(), conversationDTO.getProfile_id2()));
+    public ConversationDTO handleCreateConversation(long profileId, long friendProfileId){
+        Conversation conversation = conversationRepo.save(new Conversation(profileId, friendProfileId));
         return new ConversationDTO(conversation.getConversation_id(),conversation.getProfile_id1(), conversation.getProfile_id2());
     }
 

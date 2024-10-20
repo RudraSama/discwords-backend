@@ -11,6 +11,8 @@ public class Conversation {
     private long profile_id1;
     private long profile_id2;
 
+    public Conversation(){}
+
     public Conversation(long conversation_id, long profile_id1, long profile_id2) {
         this.conversation_id = conversation_id;
         this.profile_id1 = profile_id1;

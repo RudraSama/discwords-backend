@@ -1,7 +1,6 @@
 package com.discwords.discwords.controller;
 
 import com.discwords.discwords.DTOs.FetchFriendRequestDTO;
-import com.discwords.discwords.DTOs.FriendRequestDTO;
 import com.discwords.discwords.model.Profile;
 import com.discwords.discwords.service.UserInteractionService;
 import org.springframework.http.HttpStatus;
@@ -18,30 +17,31 @@ public class UserInteractionController {
         this.userInteractionService = userInteractionService;
     }
 
-    @PostMapping("/api/addFriend")
-    public ResponseEntity<String> handleFriendRequest(@RequestBody FriendRequestDTO friendRequestDTO){
-        return new ResponseEntity<>(userInteractionService.handleFriendRequest(friendRequestDTO), HttpStatus.ACCEPTED);
+    @PostMapping("/api/addFriend/{friendUsername}")
+    public ResponseEntity<String> handleFriendRequest(@RequestHeader("profileId") long profileId, @PathVariable("friendUsername") String friendUsername){
+        return new ResponseEntity<>(userInteractionService.handleSendFriendRequest(profileId, friendUsername), HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/api/fetchFriendRequests/{profile_id}")
-    public ResponseEntity<List<FetchFriendRequestDTO>> handleFetchFriendRequests(@PathVariable String profile_id){
-        return new ResponseEntity<>(userInteractionService.handleFetchFriendRequests(Long.parseLong(profile_id)), HttpStatus.ACCEPTED);
+    @GetMapping("/api/fetchFriendRequests")
+    public ResponseEntity<List<FetchFriendRequestDTO>> handleFetchFriendRequests(@RequestHeader("profileId") long profileId){
+        return new ResponseEntity<>(userInteractionService.handleFetchFriendRequests(profileId), HttpStatus.ACCEPTED);
     }
+
+    @GetMapping("/api/fetchFriends")
+    public ResponseEntity<List<Profile>> handleFetchFriends(@RequestHeader("profileId") long profileId){
+        return new ResponseEntity<>(userInteractionService.handleFetchFriends(profileId), HttpStatus.ACCEPTED);
+    }
+
 
     //we are getting id of row from FriendRequest table
     @PostMapping("/api/acceptFriendRequest/{id}")
-    public ResponseEntity<String> handleFriendRequestAccept(@PathVariable long id){
-        return new ResponseEntity<>(userInteractionService.handleFriendRequestAccept(id), HttpStatus.ACCEPTED);
+    public ResponseEntity<String> handleFriendRequestAccept(@RequestHeader("profileId") long profileId, @PathVariable long id){
+        return new ResponseEntity<>(userInteractionService.handleFriendRequestAccept(profileId, id), HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/api/rejectFriendRequest/{id}")
-    public ResponseEntity<String> handleFriendRequestReject(@PathVariable long id){
-        return new ResponseEntity<>(userInteractionService.handleFriendRequestReject(id), HttpStatus.ACCEPTED);
-    }
-
-    @GetMapping("/api/fetchFriends/{id}")
-    public ResponseEntity<List<Profile>> handleFetchFriends(@PathVariable long id){
-        return new ResponseEntity<>(userInteractionService.handleFetchFriends(id), HttpStatus.ACCEPTED);
+    public ResponseEntity<String> handleFriendRequestReject(@RequestHeader("profileId") long profileId, @PathVariable long id){
+        return new ResponseEntity<>(userInteractionService.handleFriendRequestReject(profileId, id), HttpStatus.ACCEPTED);
     }
 
 }

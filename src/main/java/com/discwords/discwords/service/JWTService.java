@@ -74,7 +74,7 @@ public class JWTService {
 
     public boolean isTokenExpired(String token){
         Date expiryDate = getAllClaims(token).getExpiration();
-        return expiryDate.after(new Date());
+        return expiryDate.before(new Date());
     }
 
     public boolean isTokenValid(String token, long userId, long profileId) {

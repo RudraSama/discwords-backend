@@ -1,8 +1,12 @@
 package com.discwords.discwords.websocket;
 
+import com.discwords.discwords.model.Profile;
 import com.discwords.discwords.model.User;
+import com.discwords.discwords.repository.ProfileRepo;
 import com.discwords.discwords.repository.UserRepo;
 import com.discwords.discwords.service.JWTService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -19,12 +23,13 @@ import java.util.Optional;
 @Component
 public class WebTokenFilter implements ChannelInterceptor {
 
-    private JWTService jwtService;
-    private UserRepo userRepo;
+    private final JWTService jwtService;
+    private final ProfileRepo profileRepo;
+    private final Logger LOGGER = LogManager.getLogger();
 
-    public WebTokenFilter(JWTService jwtService, UserRepo userRepo){
+    public WebTokenFilter(JWTService jwtService, ProfileRepo profileRepo){
         this.jwtService = jwtService;
-        this.userRepo = userRepo;
+        this.profileRepo = profileRepo;
     }
 
     @Override
@@ -33,19 +38,24 @@ public class WebTokenFilter implements ChannelInterceptor {
 
         if(StompCommand.CONNECT == accessor.getCommand()){
            String token = accessor.getFirstNativeHeader("x-access-token");
+
+
            if(jwtService.validJwtToken(token)){
-               String email = jwtService.extractEmail(token).toString();
 
-               Optional<User> userOptional = userRepo.findByEmail(email);
+               String userId = jwtService.extractUserId(token).toString();
+               Optional<Profile> profileRes = profileRepo.findByUserId(Long.parseLong(userId));
 
-               if (userOptional.isEmpty()){
+               if (profileRes.isEmpty()){
                    throw new RuntimeException("Invalid User");
                }
+               UserMap.addToUserList(accessor.getSessionId(), profileRes.get());
+
            }
            else{
                throw new RuntimeException("JWT Token not valid");
            }
         }
+
         return message;
     }
 }

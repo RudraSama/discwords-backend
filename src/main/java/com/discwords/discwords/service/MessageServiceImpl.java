@@ -1,20 +1,25 @@
 package com.discwords.discwords.service;
 
+import com.discwords.discwords.DTOs.ConversationDTO;
 import com.discwords.discwords.DTOs.MessageDTO;
 import com.discwords.discwords.model.Message;
+import com.discwords.discwords.repository.ConversationRepo;
 import com.discwords.discwords.repository.MessageRepo;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MessageServiceImpl implements MessageService{
 
     private final MessageRepo messageRepo;
+    private final ConversationRepo conversationRepo;
 
-    public MessageServiceImpl(MessageRepo messageRepo){
+    public MessageServiceImpl(MessageRepo messageRepo, ConversationRepo conversationRepo){
         this.messageRepo = messageRepo;
+        this.conversationRepo = conversationRepo;
     }
 
     @Override
@@ -40,7 +45,11 @@ public class MessageServiceImpl implements MessageService{
     }
 
     @Override
-    public List<MessageDTO> handleFetchConversationMessages(long conversation_id){
+    public List<MessageDTO> handleFetchConversationMessages(long profileId, long conversation_id){
+        ConversationDTO conversationDTO = conversationRepo.findConversation(profileId, conversation_id);
+        if(conversationDTO == null){
+            return null;
+        }
         return messageRepo.findConversationMessages(conversation_id);
     }
 }
