@@ -195,18 +195,18 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public Profile authorizeUser(String jwtToken) {
 
-
         long userId = Long.parseLong((String)jwtService.extractUserId(jwtToken));
         Optional<UserSession> userSessionRes = sessionRepo.findByUserId(userId);
 
         if(userSessionRes.isEmpty()){
             //need to return Exception instead of null
+            System.out.println("user session is empty");
             return null;
         }
 
         UserSession userSession = userSessionRes.get();
 
-        if(userSession.getSessionEndTime().before(new Date()) || !jwtService.isTokenExpired(jwtToken)){
+        if(userSession.getSessionEndTime().before(new Date()) || jwtService.isTokenExpired(jwtToken)){
             sessionRepo.delete(userSession);
             //need to return Exception instead of null
             return null;

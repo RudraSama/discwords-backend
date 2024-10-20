@@ -24,9 +24,9 @@ public class ConversationController {
         this.conversationService = conversationService;
     }
 
-    @PostMapping("/api/createConversation")
-    public ResponseEntity<ConversationDTO> handleCreateConversation(@RequestBody ConversationDTO conversationDTO){
-        return new ResponseEntity<>(conversationService.handleCreateConversation(conversationDTO), HttpStatus.CREATED);
+    @PostMapping("/api/createConversation/{friendProfileId}")
+    public ResponseEntity<ConversationDTO> handleCreateConversation(@RequestHeader("profileId") long profileId, @PathVariable("friendProfileId") long friendProfileId){
+        return new ResponseEntity<>(conversationService.handleCreateConversation(profileId, friendProfileId), HttpStatus.CREATED);
     }
 
     @GetMapping("/api/fetchConversations")

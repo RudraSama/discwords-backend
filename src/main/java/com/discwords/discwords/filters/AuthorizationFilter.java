@@ -50,6 +50,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             String userId = request.getHeader("userId");
             String profileId = request.getHeader("profileId");
 
+
             if(token == null){
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return;

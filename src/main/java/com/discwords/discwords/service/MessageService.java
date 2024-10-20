@@ -11,5 +11,5 @@ public interface MessageService {
     // if isConversation true, Message is for 1-1 conversation, else Channel
     @Async
     public void saveMessage(MessageDTO messageDTO, Boolean isConversation);
-    public List<MessageDTO> handleFetchConversationMessages(long conversation_id);
+    public List<MessageDTO> handleFetchConversationMessages(long profileId, long conversation_id);
 }

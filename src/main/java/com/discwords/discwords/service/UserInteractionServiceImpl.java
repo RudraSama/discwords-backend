@@ -1,8 +1,6 @@
 package com.discwords.discwords.service;
 
-import com.discwords.discwords.DTOs.ConversationDTO;
 import com.discwords.discwords.DTOs.FetchFriendRequestDTO;
-import com.discwords.discwords.DTOs.FriendRequestDTO;
 import com.discwords.discwords.model.FriendList;
 import com.discwords.discwords.model.FriendRequest;
 import com.discwords.discwords.model.Profile;
@@ -35,33 +33,40 @@ public class UserInteractionServiceImpl implements UserInteractionService{
 
 
     @Override
-    public String handleFriendRequest(FriendRequestDTO friendRequestDTO){
+    public String handleSendFriendRequest(long profileId, String friendUsername){
 
-        Optional<Profile> profileRes = profileRepo.findByUsername(friendRequestDTO.getUsername());
-        System.out.println(friendRequestDTO.getUsername());
+        Optional<Profile> profileRes = profileRepo.findByUsername(friendUsername);
+
         if(profileRes.isEmpty())
         {
             return "Username doesn't exists";
         }
+
         Profile profile = profileRes.get();
-        Optional<FriendList> friendListRes = friendListRepo.findIfFriend(friendRequestDTO.getProfile_id(), profile.getProfileId());
+        Optional<FriendList> friendListRes = friendListRepo.findIfFriend(profileId, profile.getProfileId());
         if(friendListRes.isPresent()){
             return "Friend Already Exists";
         }
-        FriendRequest friendRequest = new FriendRequest(friendRequestDTO.getProfile_id(), profile.getProfileId());
+        FriendRequest friendRequest = new FriendRequest(profileId, profile.getProfileId());
         friendRequestRepo.save(friendRequest);
+        //need to return some meaningful object
         return "Friend request sent!!!";
 
     }
     @Override
     public List<FetchFriendRequestDTO> handleFetchFriendRequests(long profile_id){
-        List<FetchFriendRequestDTO> requestRes = friendRequestRepo.findFriendRequests(profile_id);
-        return requestRes;
+        return friendRequestRepo.findFriendRequests(profile_id);
     }
 
     @Override
-    public String handleFriendRequestAccept(long id){
-        Optional<FriendRequest> friendRequestRes = friendRequestRepo.findById(id);
+    public List<Profile> handleFetchFriends(long profileId){
+        return friendListRepo.findFriends(profileId);
+    }
+
+
+    @Override
+    public String handleFriendRequestAccept(long profileId, long friendRequestId){
+        Optional<FriendRequest> friendRequestRes = friendRequestRepo.findById(profileId, friendRequestId);
 
         if(friendRequestRes.isEmpty()){
             throw new RuntimeException();
@@ -76,8 +81,8 @@ public class UserInteractionServiceImpl implements UserInteractionService{
     }
 
     @Override
-    public String handleFriendRequestReject(long id){
-        Optional<FriendRequest> friendRequestRes = friendRequestRepo.findById(id);
+    public String handleFriendRequestReject(long profileId, long friendRequestId){
+        Optional<FriendRequest> friendRequestRes = friendRequestRepo.findById(profileId, friendRequestId);
 
         if(friendRequestRes.isEmpty()){
             throw new RuntimeException();
@@ -85,13 +90,5 @@ public class UserInteractionServiceImpl implements UserInteractionService{
         friendRequestRepo.delete(friendRequestRes.get());
         return "success";
     }
-
-    @Override
-    public List<Profile> handleFetchFriends(long id){
-        return friendListRepo.findFriends(id);
-    }
-
-
-
 
 }
