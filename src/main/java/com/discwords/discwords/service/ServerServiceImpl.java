@@ -1,30 +1,41 @@
 package com.discwords.discwords.service;
 
 
+import com.discwords.discwords.DTOs.ChannelDTO;
 import com.discwords.discwords.DTOs.ServerDTO;
+import com.discwords.discwords.repository.ChannelRepo;
 import com.discwords.discwords.repository.ServerRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import com.discwords.discwords.DTOs.ServerDTO;
+
 import java.util.List;
 
 @Service
 public class ServerServiceImpl implements ServerService{
 
+    private final ServerRepo serverRepo;
+    private final ChannelRepo channelRepo;
 
-    //TODO - Converting it into Constructor Injection
-    @Autowired
-    ServerRepo serverRepo;
+    public ServerServiceImpl(ServerRepo serverRepo, ChannelRepo channelRepo){
+        this.serverRepo = serverRepo;
+        this.channelRepo = channelRepo;
+    }
+
 
     @Override
-    public List<ServerDTO> getServers(){
-//        List<ServerDTO> serverDTOList = new ArrayList<ServerDTO>();
-//        serverRepo.findAll().forEach(server->{
-//            serverDTOList.add(new ServerDTO(server.getServer_id(), server.getServer_name(), server.getChannels(), server.getMemberLists()));
-//        });
-//
-        return null;
-
+    public ServerDTO getServer(long profileId, long serverId){
+        return serverRepo.fetchServer(profileId, serverId);
     }
+
+    @Override
+    public List<ServerDTO> getServers(long profileId){
+        return serverRepo.fetchServers(profileId);
+    }
+
+    @Override
+    public List<ChannelDTO> getChannels(long profileId, long serverId){
+        return channelRepo.fetchChannels(profileId, serverId);
+    }
+
 }

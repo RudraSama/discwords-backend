@@ -10,19 +10,23 @@ public class Server {
     @Id
     private long server_id;
     private String server_name;
+    private String description;
 
-
-    @OneToMany(mappedBy = "server", fetch = FetchType.LAZY)
-    private List<MemberList> memberLists;
-
-    @OneToOne(mappedBy = "server", cascade = CascadeType.ALL)
-    private Member member;
 
     public Server(){}
 
-    public Server(long server_id, String server_name) {
+    public Server(long server_id, String server_name, String description) {
         this.server_id = server_id;
         this.server_name = server_name;
+        this.description = description;
+    }
+
+    public long getServer_id() {
+        return server_id;
+    }
+
+    public void setServer_id(long server_id) {
+        this.server_id = server_id;
     }
 
     public String getServer_name() {
@@ -33,20 +37,11 @@ public class Server {
         this.server_name = server_name;
     }
 
-    public long getServer_id() {
-        return server_id;
+    public String getDescription() {
+        return description;
     }
 
-    public void setServer_id(long server_id) {
-        this.server_id = server_id;
-    }
-    
-
-    public List<MemberList> getMemberLists() {
-        return memberLists;
-    }
-
-    public void setMemberLists(List<MemberList> memberLists) {
-        this.memberLists = memberLists;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

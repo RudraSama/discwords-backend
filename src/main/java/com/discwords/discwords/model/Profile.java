@@ -16,10 +16,6 @@ public class Profile {
    private String picture_url;
    private String email;
 
-
-   @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL)
-   private Member member;
-
    public Profile(){}
 
     public Profile(long profile_id, long user_id, String username, String email, String picture_url) {
@@ -68,15 +64,6 @@ public class Profile {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
     }
 
 }

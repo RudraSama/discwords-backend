@@ -1,25 +1,16 @@
-package com.discwords.discwords.model;
+package com.discwords.discwords.DTOs;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
-
-import java.util.List;
-
-
-@Entity
-public class Channel {
-    @Id
+public class ChannelDTO {
     private long channel_id;
     private long server_id;
     private String channel_type;
     private String channel_name;
 
 
-
-    public Channel() {
+    public ChannelDTO() {
     }
 
-    public Channel(long channel_id, long server_id, String channel_type, String channel_name) {
+    public ChannelDTO(long channel_id, long server_id, String channel_type, String channel_name) {
         this.channel_id = channel_id;
         this.server_id = server_id;
         this.channel_type = channel_type;
@@ -57,5 +48,4 @@ public class Channel {
     public void setChannel_name(String channel_name) {
         this.channel_name = channel_name;
     }
-
 }

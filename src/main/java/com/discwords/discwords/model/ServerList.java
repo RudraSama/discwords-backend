@@ -1,17 +1,18 @@
 package com.discwords.discwords.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 @Entity
-public class MemberList {
+public class ServerList {
 
     @Id
     private long id;
     private long server_id;
     private long profile_id;
 
-    public MemberList(long id, long server_id, long profile_id) {
+    public ServerList(long id, long server_id, long profile_id) {
         this.id = id;
         this.server_id = server_id;
         this.profile_id = profile_id;

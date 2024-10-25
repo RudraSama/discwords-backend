@@ -6,22 +6,18 @@ import com.discwords.discwords.model.MemberList;
 import java.util.List;
 
 public class ServerDTO {
-
     private long server_id;
     private String server_name;
-    private List<Channel> channels;
-    private List<MemberList> members;
+    private String description;
 
 
-    public ServerDTO() {}
+    public ServerDTO(){}
 
-    public ServerDTO(long server_id, String server_name, List<Channel> channels, List<MemberList> members) {
+    public ServerDTO(long server_id, String server_name, String description) {
         this.server_id = server_id;
         this.server_name = server_name;
-        this.channels = channels;
-        this.members = members;
+        this.description = description;
     }
-
 
     public long getServer_id() {
         return server_id;
@@ -39,19 +35,11 @@ public class ServerDTO {
         this.server_name = server_name;
     }
 
-    public List<Channel> getChannels() {
-        return channels;
+    public String getDescription() {
+        return description;
     }
 
-    public void setChannels(List<Channel> channels) {
-        this.channels = channels;
-    }
-
-    public List<MemberList> getMembers() {
-        return members;
-    }
-
-    public void setMembers(List<MemberList> members) {
-        this.members = members;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
