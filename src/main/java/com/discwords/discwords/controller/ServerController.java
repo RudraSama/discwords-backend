@@ -3,6 +3,7 @@ package com.discwords.discwords.controller;
 
 import com.discwords.discwords.DTOs.ChannelDTO;
 import com.discwords.discwords.DTOs.ServerDTO;
+import com.discwords.discwords.model.Profile;
 import com.discwords.discwords.service.ServerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,11 @@ public class ServerController {
     @GetMapping("api/getChannels/{server_id}")
     public ResponseEntity<List<ChannelDTO>> getChannels(@RequestHeader("profileId") long profileId, @PathVariable("server_id") long serverId){
         return new ResponseEntity<>(serverService.getChannels(profileId, serverId), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("api/getMembers/{server_id}")
+    public ResponseEntity<List<Profile>> getMembers(@RequestHeader("profileId") long profileId, @PathVariable("server_id") long serverId){
+        return new ResponseEntity<>(serverService.getMembers(profileId, serverId), HttpStatus.ACCEPTED);
     }
 
 }
